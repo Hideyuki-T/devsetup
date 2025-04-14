@@ -50,14 +50,16 @@ echo " - ${PROJECT_NAME}/.env"
 echo "Docker設定"
 
 TEMPLATE_DOCKER_DIR="${SCRIPT_DIR}/templates/docker"
-DEST_DOCKER_DIR="${PROJECT_PATH}/docker"
 
-# テンプレートが存在するか確認
 if [ -d "$TEMPLATE_DOCKER_DIR" ]; then
-    cp -R "$TEMPLATE_DOCKER_DIR/"* "$DEST_DOCKER_DIR/"
-    echo "Docker設定ファイルを ${DEST_DOCKER_DIR} にコピーしたよ"
+    if [ -f "${TEMPLATE_DOCKER_DIR}/docker-compose.yml" ]; then
+         cp "${TEMPLATE_DOCKER_DIR}/docker-compose.yml" "${PROJECT_PATH}/docker-compose.yml"
+         echo "docker-compose.yml を ${PROJECT_PATH} にコピー！"
+    else
+         echo "docker-compose.yml がテンプレートにないよ。"
+    fi
 else
-    echo "テンプレート用 docker/ ディレクトリが見つかりません。"
+    echo "テンプレート用 docker/ ディレクトリがないよ。"
 fi
 
 
