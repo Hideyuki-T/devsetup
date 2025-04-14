@@ -43,9 +43,23 @@ if [ ! -f "${PROJECT_PATH}/.env" ]; then
 fi
 
 echo "初期構造："
-echo " - ${PROJECT_PATH}/src/"
-echo " - ${PROJECT_PATH}/docker/"
-echo " - ${PROJECT_PATH}/.env"
+echo " - ${PROJECT_NAME}/src/"
+echo " - ${PROJECT_NAME}/docker/"
+echo " - ${PROJECT_NAME}/.env"
+# -------------------------------------------------
+echo "Docker設定"
+
+TEMPLATE_DOCKER_DIR="${SCRIPT_DIR}/templates/docker"
+DEST_DOCKER_DIR="${PROJECT_PATH}/docker"
+
+# テンプレートが存在するか確認
+if [ -d "$TEMPLATE_DOCKER_DIR" ]; then
+    cp -R "$TEMPLATE_DOCKER_DIR/"* "$DEST_DOCKER_DIR/"
+    echo "Docker設定ファイルを ${DEST_DOCKER_DIR} にコピーしたよ"
+else
+    echo "テンプレート用 docker/ ディレクトリが見つかりません。"
+fi
+
 
 
 # -------------------------------------------------
