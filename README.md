@@ -30,6 +30,11 @@
 ├── Makefile
 ├── README.md
 ├── templates
+│   └── docker
+│       ├── docker-compose.yml
+│       ├── Dockerfile
+│       └── nginx
+│           └── default.conf
 └── utils
 ```
 
