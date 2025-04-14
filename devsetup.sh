@@ -17,13 +17,36 @@ PROJECT_PATH="${BASE_DIR}/${PROJECT_NAME}"
 
 # 存在チェック
 if [ -d "$PROJECT_PATH" ]; then
-  echo "⚠️ ${PROJECT_PATH} は既にありますので他の名前で。"
+  echo "${PROJECT_PATH} は既にありますので他の名前で。"
   exit 1
 fi
 
 # 作成処理
 mkdir -p "$PROJECT_PATH"
 echo "✨ ${PROJECT_PATH} を作成しました！！"
+# -------------------------------------------------
+# ディレクトリ・ファイル構成を作成する
+echo "プロジェクト構成作成中"
+
+mkdir -p "${PROJECT_PATH}/src"
+mkdir -p "${PROJECT_PATH}/docker"
+
+# .env が存在しない場合のみ作成（重複防止のためのもの）
+if [ ! -f "${PROJECT_PATH}/.env" ]; then
+  touch "${PROJECT_PATH}/.env"
+  echo "# .env ファイル（自動生成）" >> "${PROJECT_PATH}/.env"
+  echo "APP_NAME=${PROJECT_NAME}" >> "${PROJECT_PATH}/.env"
+  echo "APP_PORT=${PORT}" >> "${PROJECT_PATH}/.env"
+  echo "DB_TYPE=${DB}" >> "${PROJECT_PATH}/.env"
+  echo "FW=${FW}" >> "${PROJECT_PATH}/.env"
+  echo "FW_VERSION=${VERSION:-latest}" >> "${PROJECT_PATH}/.env"
+fi
+
+echo "初期構造："
+echo " - ${PROJECT_PATH}/src/"
+echo " - ${PROJECT_PATH}/docker/"
+echo " - ${PROJECT_PATH}/.env"
+
 
 # -------------------------------------------------
 read -p "使用したいポート番号はどうしますか？: " PORT
@@ -37,14 +60,14 @@ fi
 # DB選択
 echo "使用するデータベースを選んでください："
 select DB in "MySQL" "PostgreSQL" "SQLite"; do
-  echo "💎 ${DB} を使用しますね！"
+  echo "${DB} を使用しますね！"
   break
 done
 
 # FW選択
 echo "使用したいフレームワークを選択してください："
 select FW in "Laravel" "Symfony" "Django" "Express" "NestJS" "Flask" "Rails"; do
-  echo "💎 ${FW} を使用します！"
+  echo "${FW} を使用します！"
   break
 done
 
@@ -54,8 +77,8 @@ read -p "${FW} のバージョンを入力してくださいね（空欄で最�
 mkdir -p "${SAVE_DIR}/${PROJECT_NAME}"
 
 echo ""
-echo "🎉 開発の準備が整いましたよ！"
-echo "📂 ${SAVE_DIR}/${PROJECT_NAME} に環境を作ります。"
-echo "💻 ポート番号：${PORT}"
-echo "🗃 DB：${DB}"
-echo "🌐 フレームワーク：${FW}（バージョン：${VERSION:-latest}）"
+echo "開発の準備が整いましたよ！"
+echo "${SAVE_DIR}/${PROJECT_NAME} に環境を作ります。"
+echo "ポート番号：${PORT}"
+echo "DB：${DB}"
+echo "フレームワーク：${FW}（バージョン：${VERSION:-latest}）"
