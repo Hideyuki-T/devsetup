@@ -89,6 +89,37 @@ done
 
 read -p "${FW} のバージョンを入力してくださいね（空欄で最新版になります。）: " VERSION
 
+
+# -------------------------------------------------
+
+echo ""
+echo "🎉 開発の準備が整いましたよ！"
+echo "${PROJECT_PATH} に環境を作ります。"
+echo "ポート番号：${PORT}"
+echo "DB：${DB}"
+echo "フレームワーク：${FW}（バージョン：${VERSION:-latest}）"
+
+# -------------------------------------------------
+export PROJECT_NAME
+export PORT
+export DB
+export FW
+export VERSION
+
+# 移動先：プロジェクトルートディレクトリ
+cd "${PROJECT_PATH}" || { echo "ディレクトリ移動に失敗"; exit 1; }
+
+
+echo "build..."
+docker-compose -f docker-compose.yml build
+
+echo "up..."
+docker-compose -f docker-compose.yml up -d
+
+echo "成功"
+
+# -------------------------------------------------
+
 # 保存場所の作成
 mkdir -p "${SAVE_DIR}/${PROJECT_NAME}"
 
