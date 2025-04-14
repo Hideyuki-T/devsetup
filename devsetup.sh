@@ -3,23 +3,28 @@
 echo "devsetup起動"
 echo ""
 
-# -------------------------------------------------
-read -p "プロジェクト名はどうしますか？: " PROJECT_NAME
-# -------------------------------------------------
-read -p "保存先ディレクトリはどうしますか？: " SAVE_DIR
-SAVE_DIR=$(eval echo "${SAVE_DIR}")
-# ディレクトリno存在確認
-if [ ! -d "$SAVE_DIR" ]; then
-  echo "${SAVE_DIR} はないですよ。作ります？ (Y/n) "
-    read -r CREATE
-    if [[ "$CREATE" == "Y" || "$CREATE" == "y" ]]; then
-      mkdir -p "$SAVE_DIR"
-      echo "${SAVE_DIR} を作りました！"
-    else
-      echo "OK!"
-      exit 1
-    fi
+# スクリプトがあるディレクトリを取得
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# 親ディレクトリを取得
+BASE_DIR="$(dirname "$SCRIPT_DIR")"
+
+# プロジェクト名を入力
+read -p "プロジェクト名はどうします？: " PROJECT_NAME
+
+# プロジェクトパスは devsetup の“隣”にku
+PROJECT_PATH="${BASE_DIR}/${PROJECT_NAME}"
+
+# 存在チェック
+if [ -d "$PROJECT_PATH" ]; then
+  echo "⚠️ ${PROJECT_PATH} は既にありますので他の名前で。"
+  exit 1
 fi
+
+# 作成処理
+mkdir -p "$PROJECT_PATH"
+echo "✨ ${PROJECT_PATH} を作成しました！！"
+
 # -------------------------------------------------
 read -p "使用したいポート番号はどうしますか？: " PORT
 
