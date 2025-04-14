@@ -30,11 +30,29 @@
 ├── Makefile
 ├── README.md
 ├── templates
-│   └── docker
-│       ├── docker-compose.yml
-│       ├── Dockerfile
-│       └── nginx
-│           └── default.conf
+│   ├── docker
+│   │   ├── db
+│   │   │   ├── mysql
+│   │   │   │   ├── Dockerfile
+│   │   │   │   └── init.sql
+│   │   │   ├── postgres
+│   │   │   │   ├── Dockerfile
+│   │   │   │   └── init.sql
+│   │   │   └── sqlite
+│   │   │       └── create_db.sh
+│   │   ├── docker-compose.yml
+│   │   ├── Dockerfile
+│   │   ├── languages
+│   │   │   └── php
+│   │   │       └── Dockerfile
+│   │   └── web
+│   │       ├── apache
+│   │       │   ├── Dockerfile
+│   │       │   └── httpd.conf
+│   │       └── nginx
+│   │           ├── default.conf
+│   │           └── Dockerfile
+│   └── env
 └── utils
 ```
 
