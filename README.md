@@ -25,34 +25,24 @@
 
 ## tree
 ```
-devsetup-tool/                     
-├── devsetup.sh                    
-├── templates/                     
-│   ├── php-nginx-mysql/           
-│   │   ├── docker-compose.yml.template
-│   │   ├── .env.template
-│   │   └── docker/                
-│   │       ├── php/Dockerfile
-│   │       └── nginx/default.conf
-│   └── ...                    //拡張用    
-├── functions/                     
-│   ├── port_checker.sh            
-│   ├── env_generator.sh           
-│   ├── compose_generator.sh       
-│   └── logger.sh                  
-└── README.md                      
-
-projects/                          
-├── myapp1/                        
-│   ├── src/                       
-│   ├── docker-compose.yml         
-│   ├── .env                     
-│   └── docker/                    
-│       ├── php/
-│       └── nginx/
-└── myapp2/                        
-    └── ...
-
+devsetup/                     
+├── .gitignore
+├── devsetup.sh
+├── functions
+│   ├── compose_generator.sh
+│   ├── env_generator.sh
+│   ├── logger.sh
+│   └── port_checker.sh
+├── README.md
+└── templates
+    └── php-nginx-mysql
+        ├── .env.template
+        ├── docker
+        │   ├── nginx
+        │   │   └── default.conf
+        │   └── php
+        │       └── Dockerfile
+        └── docker-compose.yml.template
 ```
 
 ## 🚀 使い方
