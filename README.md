@@ -25,35 +25,34 @@
 
 ## tree
 ```
-.
-├── devsetup.sh
-├── Makefile
-├── README.md
-├── templates
-│   ├── docker
-│   │   ├── db
-│   │   │   ├── mysql
-│   │   │   │   ├── Dockerfile
-│   │   │   │   └── init.sql
-│   │   │   ├── postgres
-│   │   │   │   ├── Dockerfile
-│   │   │   │   └── init.sql
-│   │   │   └── sqlite
-│   │   │       └── create_db.sh
-│   │   ├── docker-compose.yml
-│   │   ├── Dockerfile
-│   │   ├── languages
-│   │   │   └── php
-│   │   │       └── Dockerfile
-│   │   └── web
-│   │       ├── apache
-│   │       │   ├── Dockerfile
-│   │       │   └── httpd.conf
-│   │       └── nginx
-│   │           ├── default.conf
-│   │           └── Dockerfile
-│   └── env
-└── utils
+devsetup-tool/                     
+├── devsetup.sh                    
+├── templates/                     
+│   ├── php-nginx-mysql/           
+│   │   ├── docker-compose.yml.template
+│   │   ├── .env.template
+│   │   └── docker/                
+│   │       ├── php/Dockerfile
+│   │       └── nginx/default.conf
+│   └── ...                    //拡張用    
+├── functions/                     
+│   ├── port_checker.sh            
+│   ├── env_generator.sh           
+│   ├── compose_generator.sh       
+│   └── logger.sh                  
+└── README.md                      
+
+projects/                          
+├── myapp1/                        
+│   ├── src/                       
+│   ├── docker-compose.yml         
+│   ├── .env                     
+│   └── docker/                    
+│       ├── php/
+│       └── nginx/
+└── myapp2/                        
+    └── ...
+
 ```
 
 ## 🚀 使い方

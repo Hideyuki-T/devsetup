@@ -10,20 +10,20 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_DIR="$(dirname "$SCRIPT_DIR")"
 
 # プロジェクト名を入力
-read -p "プロジェクト名はどうします？: " PROJECT_NAME
+read -p "プロジェクト名は？: " PROJECT_NAME
 
-# プロジェクトパスは devsetup の“隣”にku
+# プロジェクトパスは devsetup 同じディレクトリに
 PROJECT_PATH="${BASE_DIR}/${PROJECT_NAME}"
 
 # 存在チェック
 if [ -d "$PROJECT_PATH" ]; then
-  echo "${PROJECT_PATH} は既にありますので他の名前で。"
+  echo "${PROJECT_PATH} は既にあるので他の名前で。"
   exit 1
 fi
 
 # 作成処理
 mkdir -p "$PROJECT_PATH"
-echo "✨ ${PROJECT_PATH} を作成しました！！"
+echo "${PROJECT_PATH} を作成しました！！"
 # -------------------------------------------------
 # ディレクトリ・ファイル構成を作成する
 echo "プロジェクト構成作成中"
@@ -93,7 +93,7 @@ read -p "${FW} のバージョンを入力してくださいね（空欄で最�
 # -------------------------------------------------
 
 echo ""
-echo "🎉 開発の準備が整いましたよ！"
+echo "開発の準備が整いましたよ！"
 echo "${PROJECT_PATH} に環境を作ります。"
 echo "ポート番号：${PORT}"
 echo "DB：${DB}"
