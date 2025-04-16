@@ -60,14 +60,15 @@
 
 
 ## 使い方
-1. 必要な実行権限を付与。
+1. 必要な実行権限を全ての.shに付与。
 ```
-   chmod +x devsetup.sh
+chmod +x ~
 ```
 2. 実行
 ```
 ./devsetup.sh
 ```
+3. 後は実行すれば分かる。
 
 ## 必要環境および依存関係
 - **Docker** および **Docker Compose**
