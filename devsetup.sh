@@ -13,7 +13,8 @@ log_info "初期設定開始"
 echo "作成したい設定を選択してくださいな。"
 echo " [1] PHP + nginx + MySQL"
 echo " [2] PHP + nginx + MySQL + Laravel"
-echo " 追加したい設定はここに "
+echo " [3] PHP + nginx + MySQL + Laravel + Breeze"
+echo " [ ]追加したい設定はここに "
 
 read -p "どれにしますか？:" env_choice
 
