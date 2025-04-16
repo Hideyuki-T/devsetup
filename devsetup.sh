@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ヘルパースクリプト読み込み
-SCRIPT_DIR="$(dirname "$0")"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/functions/port_checker.sh"
 source "${SCRIPT_DIR}/functions/env_generator.sh"
 source "${SCRIPT_DIR}/functions/compose_generator.sh"
