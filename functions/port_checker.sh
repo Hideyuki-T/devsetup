@@ -1,7 +1,7 @@
 #!/bin/bash
 
 check_port_availability() {
-  local port ="$1"
+ local port="$1"
   while lsof -i TCP:"${port}" -sTCP:LISTEN >/dev/null 2>&1; do
     log_warn "ポート　${port} は使用中なので +1して設定します。"
     port=$((port + 1))
