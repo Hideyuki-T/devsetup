@@ -56,6 +56,8 @@ log_info "選択したポート番号 → webポート: ${WEB_PORT} dbポート:
 compose_generator "${TEMPLATE_DIR}/docker-compose.yml.template" "${TARGET_PROJECT_DIR}/docker-compose.yml"
 env_generator "${TEMPLATE_DIR}/.env.template" "${TARGET_PROJECT_DIR}/.env"
 
+# echo "DEBUG: compose_generator - テンプレートファイル: $template_file"
+
 log_info "[完了]テンプレート設定ファイルを作成"
 
 cd "${TARGET_PROJECT_DIR}"
