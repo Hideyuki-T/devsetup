@@ -32,9 +32,11 @@ mkdir -p "${TARGET_PROJECT_DIR}/docker"
 mkdir -p "${TARGET_PROJECT_DIR}/src"
 log_info "プロジェクトディレクトリを生成したよ: ${TARGET_PROJECT_DIR}"
 
-cp -r "${TEMPLATE_DIR}/docker" "${TARGET_PROJECT_DIR}/"
-
 TEMPLATE_DIR="${SCRIPT_DIR}/templates/php-nginx-mysql"
+echo "DEBUG: TEMPLATE_DIR = ${TEMPLATE_DIR}"
+echo "DEBUG: コピー元 = ${TEMPLATE_DIR}/docker"
+
+cp -r "${TEMPLATE_DIR}/docker" "${TARGET_PROJECT_DIR}/"
 
 export APP_CONTAINER_NAME="${project_name}_app"
 export NGINX_CONTAINER_NAME="${project_name}_nginx"
@@ -57,8 +59,6 @@ log_info "選択したポート番号 → webポート: ${WEB_PORT} dbポート:
 
 compose_generator "${TEMPLATE_DIR}/docker-compose.yml.template" "${TARGET_PROJECT_DIR}/docker-compose.yml"
 env_generator "${TEMPLATE_DIR}/.env.template" "${TARGET_PROJECT_DIR}/.env"
-
-# echo "DEBUG: compose_generator - テンプレートファイル: $template_file"
 
 log_info "[完了]テンプレート設定ファイルを作成"
 
