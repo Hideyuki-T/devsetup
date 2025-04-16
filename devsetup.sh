@@ -12,14 +12,16 @@ PROJECTS_DIR="$(dirname "${SCRIPT_DIR}")"
 log_info "初期設定開始"
 echo "作成したい設定を選択してくださいな。"
 echo " [1] PHP + nginx + MySQL"
+echo " [2] PHP + nginx + MySQL + Laravel"
 echo " 追加したい設定はここに "
 
 read -p "どれにしますか？:" env_choice
 
-if [ "$env_choice" -ne 1 ]; then
-  log_error "今は 1 だけだよ。"
+if [ "$env_choice" -ne 1 ] && [ "$env_choice" -ne 2 ]; then
+  log_error "有効な選択肢は1と2だよ。"
   exit 1
 fi
+
 read -p "プロジェクト名はどうする？: " project_name
 TARGET_PROJECT_DIR="${PROJECTS_DIR}/${project_name}"
 
@@ -61,6 +63,12 @@ compose_generator "${TEMPLATE_DIR}/docker-compose.yml.template" "${TARGET_PROJEC
 env_generator "${TEMPLATE_DIR}/.env.template" "${TARGET_PROJECT_DIR}/.env"
 
 log_info "[完了]テンプレート設定ファイルを作成"
+
+if [ "$env_choice" -eq 1 ]; then
+  "${SCRIPT_DIR}/scripts/build_base.sh" "${TARGET_PROJECT_DIR}" "${project_name}"
+elif [ "$env_choice" -eq 2 ]; then
+  "${SCRIPT_DIR}/scripts/build_laravel.sh" "${TARGET_PROJECT_DIR}" "${project_name}"
+fi
 
 cd "${TARGET_PROJECT_DIR}"
 log_info "コンテナ起動"
