@@ -32,6 +32,8 @@ mkdir -p "${TARGET_PROJECT_DIR}/docker"
 mkdir -p "${TARGET_PROJECT_DIR}/src"
 log_info "プロジェクトディレクトリを生成したよ: ${TARGET_PROJECT_DIR}"
 
+cp -r "${TEMPLATE_DIR}/docker" "${TARGET_PROJECT_DIR}/"
+
 TEMPLATE_DIR="${SCRIPT_DIR}/templates/php-nginx-mysql"
 
 export APP_CONTAINER_NAME="${project_name}_app"
