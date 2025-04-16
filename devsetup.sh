@@ -18,8 +18,8 @@ echo " [ ]追加したい設定はここに "
 
 read -p "どれにしますか？:" env_choice
 
-if [ "$env_choice" -ne 1 ] && [ "$env_choice" -ne 2 ]; then
-  log_error "有効な選択肢は1と2だよ。"
+if [ "$env_choice" -ne 1 ] || [ "$env_choice" -ne 3 ]; then
+  log_error "有効な選択肢は 1~3 だよ。"
   exit 1
 fi
 
