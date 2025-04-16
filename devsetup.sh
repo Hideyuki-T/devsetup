@@ -7,7 +7,7 @@ source "${SCRIPT_DIR}/functions/env_generator.sh"
 source "${SCRIPT_DIR}/functions/compose_generator.sh"
 source "${SCRIPT_DIR}/functions/logger.sh"
 
-PROJECTS_DIR="$(pwd)/projects"
+PROJECTS_DIR="$(dirname "${SCRIPT_DIR}")"
 
 log_info "初期設定開始"
 echo "作成したい設定を選択してくださいな。"
