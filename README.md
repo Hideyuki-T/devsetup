@@ -44,7 +44,6 @@
 │   ├── env_generator.sh
 │   ├── logger.sh
 │   └── port_checker.sh
-├── projects
 ├── README.md
 ├── scripts
 │   ├── build_base.sh
