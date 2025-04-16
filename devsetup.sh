@@ -59,7 +59,7 @@ env_generator "${TEMPLATE_DIR}/.env.template" "${TARGET_PROJECT_DIR}/.env"
 log_info "[完了]テンプレート設定ファイルを作成"
 
 cd "${TARGET_PROJECT_DIR}"
-log_info コンテナ起動
+log_info "コンテナ起動"
 docker compose up -d --build
 
 log_success "[完成]'${project_name}'"
