@@ -69,6 +69,8 @@ if [ "$env_choice" -eq 1 ]; then
   "${SCRIPT_DIR}/scripts/build_base.sh" "${TARGET_PROJECT_DIR}" "${project_name}"
 elif [ "$env_choice" -eq 2 ]; then
   "${SCRIPT_DIR}/scripts/build_laravel.sh" "${TARGET_PROJECT_DIR}" "${project_name}"
+elif [ "$env_choice" -eq 3 ]; then
+  "${SCRIPT_DIR}/scripts/build_breeze.sh" "${TARGET_PROJECT_DIR}" "${project_name}"
 fi
 
 cd "${TARGET_PROJECT_DIR}"
