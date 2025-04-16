@@ -74,4 +74,18 @@ cd "${TARGET_PROJECT_DIR}"
 log_info "コンテナ起動"
 docker compose up -d --build
 
-log_success "[完成]'${project_name}'"
+if [ "$env_choice" -eq 2 ]; then
+  read -p "Dockerコンテナ起動。Laravel のマイグレーションをコンテナ内で実行しますか？ (Y/n): " migrate_choice
+  case "$(echo "$migrate_choice" | tr '[:upper:]' '[:lower:]')" in
+    y|yes|"")
+      log_info "Docker内のアプリケーションコンテナで 'migrate:fresh' を実行します。"
+      docker exec -it "${APP_CONTAINER_NAME}" php artisan migrate:fresh --force
+      ;;
+    *)
+      log_info "マイグレーションはスキップされました。"
+      ;;
+  esac
+fi
+
+
+log_success "[SUCCESS]'${project_name}'"

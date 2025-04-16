@@ -25,4 +25,5 @@ composer create-project laravel/laravel . "${laravel_version}"
 cd "${TARGET_PROJECT_DIR}" || { echo "[ERROR] プロジェクトディレクトリに戻れませんでした。。。"; exit 1; }
 
 echo "[INFO] build_laravel.sh：Laravel のインストールが完了しました！"
+
 exit 0
