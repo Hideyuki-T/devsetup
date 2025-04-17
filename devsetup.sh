@@ -60,14 +60,11 @@ case "$env_choice" in
     ;;
   2)
     "${SCRIPT_DIR}/scripts/build_laravel.sh" "$TARGET_PROJECT_DIR" "$project_name"
-    read -p "Laravel のマイグレーションを実行しますか？|ω・｀) (Y/n): " mig
-    mig=$(echo "$mig" | tr '[:upper:]' '[:lower:]')
-    [[ "$mig" =~ ^(y|yes|)$ || -z "$mig" ]] && \
-      docker exec -it "$APP_CONTAINER_NAME" php artisan migrate:fresh --force
     ;;
   3)
     "${SCRIPT_DIR}/scripts/build_breeze.sh"  "$TARGET_PROJECT_DIR" "$project_name"
     ;;
 esac
+
 
 log_success "[SUCCESS] '${project_name}' "

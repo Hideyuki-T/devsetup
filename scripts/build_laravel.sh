@@ -27,5 +27,11 @@ docker exec -it "$APP_CONTAINER_NAME" bash -c "\
     composer create-project laravel/laravel /var/www/html \"$LARAVEL_VERSION\"
   fi"
 
-echo "[SUCCESS] Laravel "
+read -p "migrate:fresh を実行しますか？ (Y/n): " mig
+mig=$(echo "$mig" | tr '[:upper:]' '[:lower:]')
+if [[ "$mig" =~ ^(y|yes|)$ || -z "$mig" ]]; then
+  docker exec -it "$APP_CONTAINER_NAME" php /var/www/html/artisan migrate:fresh --force
+fi
+
+echo "[SUCCESS] Laravel(${LARAVEL_VERSION:-latest}) セットアップ完了ヽ(´ー｀)ノﾊﾞﾝｻﾞｰｲ in '${project_name}' "
 exit 0
