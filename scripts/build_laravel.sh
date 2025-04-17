@@ -1,29 +1,17 @@
 #!/bin/bash
+# Laravel 単体インストール
 
-# 基本環境の処理を引き継ぎ、その後、src ディレクトリ内に Laravel フレームワークをインストール
+TARGET_PROJECT_DIR="$1"; project_name="$2"; APP_CONTAINER_NAME="${project_name}_app"
+[ -z "$TARGET_PROJECT_DIR" ] && { echo "[ERROR] 引数不足(-＿-)"; exit 1; }
 
-TARGET_PROJECT_DIR="$1"
-project_name="$2"
-
-if [ -z "$TARGET_PROJECT_DIR" ] || [ -z "$project_name" ]; then
-  echo "[ERROR] ターゲットプロジェクトディレクトリまたはプロジェクト名が指定されていません。"
-  exit 1
+# バージョンを確認／入力
+if [ -z "$LARAVEL_VERSION" ]; then
+  read -p "Laravel バージョン（例 12.*、空なら最新を選択するよ(「・ω・)「 ｶﾞｵｰ）: " ver
+  LARAVEL_VERSION="${ver:-latest}"
 fi
 
-read -p "Laravel のバージョン指定（例: 12.*）： " laravel_version
-if [ -z "$laravel_version" ]; then
-  laravel_version="12.*"
-fi
-
-echo "[INFO] Laravel を src ディレクトリにインストールします： バージョン ${laravel_version}"
-
-
-cd "${TARGET_PROJECT_DIR}/src" || { echo "[ERROR] src ディレクトリに移動できませんでした。。。"; exit 1; }
-composer create-project laravel/laravel . "${laravel_version}"
-
-# インストール後、元のディレクトリに戻る
-cd "${TARGET_PROJECT_DIR}" || { echo "[ERROR] プロジェクトディレクトリに戻れませんでした。。。"; exit 1; }
-
-echo "[INFO] build_laravel.sh：Laravel のインストールが完了しました！"
-
+echo "[INFO] Laravel(${LARAVEL_VERSION}) をインストール"
+docker exec -it "$APP_CONTAINER_NAME" bash -c "\
+  composer create-project laravel/laravel /var/www/html ${LARAVEL_VERSION}"
+echo "[SUCCESS] Laravel インストール完了"
 exit 0
