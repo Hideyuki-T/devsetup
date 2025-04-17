@@ -47,6 +47,7 @@
 ├── README.md
 ├── scripts
 │   ├── build_base.sh
+│   ├── build_breeze.sh
 │   └── build_laravel.sh
 └── templates
     └── php-nginx-mysql
