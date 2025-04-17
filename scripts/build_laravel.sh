@@ -1,29 +1,37 @@
 #!/bin/bash
-
-# 基本環境の処理を引き継ぎ、その後、src ディレクトリ内に Laravel フレームワークをインストール
+#=========================================
+# build_laravel.sh  –  Laravel 単体セットアップ
+#=========================================
 
 TARGET_PROJECT_DIR="$1"
 project_name="$2"
+APP_CONTAINER_NAME="${project_name}_app"
 
-if [ -z "$TARGET_PROJECT_DIR" ] || [ -z "$project_name" ]; then
-  echo "[ERROR] ターゲットプロジェクトディレクトリまたはプロジェクト名が指定されていません。"
-  exit 1
+[ -z "$TARGET_PROJECT_DIR" ] && { echo "[ERROR] 引数不足 (-＿-)"; exit 1; }
+
+#── バージョン決定 ────────────────────────────
+if [ -z "$LARAVEL_VERSION" ]; then
+  read -p "Laravel バージョン（例 12.*、空で最新版）: " ver
+  LARAVEL_VERSION="${ver}"
+fi
+# 'latest' と書かれたら空に変換（Composer が理解）
+[ "$LARAVEL_VERSION" = "latest" ] && LARAVEL_VERSION=""
+
+echo "[INFO] Laravel(${LARAVEL_VERSION:-latest}) をインストール"
+
+#── コンテナ内でインストール ───────────────────
+docker exec -it "$APP_CONTAINER_NAME" bash -c "\
+  if [ -z \"$LARAVEL_VERSION\" ]; then
+    composer create-project laravel/laravel /var/www/html
+  else
+    composer create-project laravel/laravel /var/www/html \"$LARAVEL_VERSION\"
+  fi"
+
+read -p "migrate:fresh を実行しますか？ (Y/n): " mig
+mig=$(echo "$mig" | tr '[:upper:]' '[:lower:]')
+if [[ "$mig" =~ ^(y|yes|)$ || -z "$mig" ]]; then
+  docker exec -it "$APP_CONTAINER_NAME" php /var/www/html/artisan migrate:fresh --force
 fi
 
-read -p "Laravel のバージョン指定（例: 12.*）： " laravel_version
-if [ -z "$laravel_version" ]; then
-  laravel_version="12.*"
-fi
-
-echo "[INFO] Laravel を src ディレクトリにインストールします： バージョン ${laravel_version}"
-
-
-cd "${TARGET_PROJECT_DIR}/src" || { echo "[ERROR] src ディレクトリに移動できませんでした。。。"; exit 1; }
-composer create-project laravel/laravel . "${laravel_version}"
-
-# インストール後、元のディレクトリに戻る
-cd "${TARGET_PROJECT_DIR}" || { echo "[ERROR] プロジェクトディレクトリに戻れませんでした。。。"; exit 1; }
-
-echo "[INFO] build_laravel.sh：Laravel のインストールが完了しました！"
-
+echo "[SUCCESS] Laravel(${LARAVEL_VERSION:-latest}) セットアップ完了ヽ(´ー｀)ノﾊﾞﾝｻﾞｰｲ in '${project_name}' "
 exit 0

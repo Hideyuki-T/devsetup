@@ -35,6 +35,18 @@
 - **拡張性:**  
   現在は PHP + nginx + MySQL + Laravel に特化しているが、将来的には Django、Symfony、Express など、必要だと思ったフレームワークおよびプラットフォームに対応可能な構造を備えている。
 
+## メニュー構成（2025‑04 現在）
+
+| 番号 | 構成テンプレート                         | 備考                                         |
+|------|----------------------------------|----------------------------------------------|
+| 1    | PHP+nginx+MySQL                  | 素の LEMP                                   |
+| 2    | PHP+nginx+MySQL+Laravel          | バージョン指定可・マイグレーション選択可       |
+| 3    | PHP+nginx+MySQL+Laravel+Breeze   | UI 認証付き・vite ビルド自動・migrate 選択可   |
+
+
+追加テンプレートは随時拡張予定。
+
+
 ## ディレクトリ構造
 ```
 .
@@ -47,6 +59,7 @@
 ├── README.md
 ├── scripts
 │   ├── build_base.sh
+│   ├── build_breeze.sh
 │   └── build_laravel.sh
 └── templates
     └── php-nginx-mysql
