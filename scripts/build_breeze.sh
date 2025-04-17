@@ -12,7 +12,11 @@ fi
 
 echo "[INFO] Laravel(${LARAVEL_VERSION}) & Breeze を導入"
 docker exec -it "$APP_CONTAINER_NAME" bash -c "\
-  composer create-project laravel/laravel /var/www/html ${LARAVEL_VERSION} \
+  if [ "$LARAVEL_VERSION" = "latest" ] || [ -z "$LARAVEL_VERSION" ]; then
+    composer create-project laravel/laravel /var/www/html
+  else
+    composer create-project laravel/laravel /var/www/html "${LARAVEL_VERSION}"
+  fi
   && cd /var/www/html \
   && composer require laravel/breeze --dev \
   && php artisan breeze:install \
