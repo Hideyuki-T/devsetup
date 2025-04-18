@@ -5,5 +5,5 @@ devsetup: devsetup.sh
 
 # 実際の実行処理（Makefile上の仮想ターゲット）
 devsetup.sh:
-	@echo "🎩 devsetup 実行"
+	@echo "devsetup 実行"
 	@bash bin/devsetup.sh
