@@ -72,6 +72,56 @@
         └── docker-compose.yml.template
 ```
 
+## ∞フレームワーク適用後のディレクトリ構成案（改訂版）
+```
+devsetup/
+├── bin/
+│   └── devsetup.sh                     # フレームワークを起動するエントリポイント
+│
+├── config/
+│   ├── default.conf                    # モジュールのデフォルト有効設定
+│   └── user.conf                       # ユーザー設定（対話式で上書き可能）
+│
+├── framework/
+│   ├── core.sh                         # run_phase等のライフサイクル制御
+│   ├── loader.sh                       # モジュール検出 & 設定読み込み
+│   └── logger.sh                       # 色付きログ出力＋タイムスタンプ
+│
+├── modules/
+│   ├── menu/
+│   │   └── init.sh                     # 最初に表示されるメニュー（既存のままでOK）
+│   │
+│   ├── docker/
+│   │   ├── init.sh                     # テンプレートコピーなど初期化処理
+│   │   ├── configure.sh                # ポート・DB等の設定
+│   │   └── execute.sh                  # docker-compose 実行
+│   │
+│   ├── laravel/
+│   │   ├── init.sh                     # Laravel 新規プロジェクト作成
+│   │   ├── configure.sh                # .env 設定など
+│   │   └── execute.sh                  # migrate などの実行
+│   │
+│   ├── breeze/
+│   │   ├── init.sh                     # Breeze インストール
+│   │   └── execute.sh                  # npm install 等
+│   │
+│   └── cleanup/
+│       └── execute.sh                  # 一時ファイル削除・サマリー出力
+│
+├── templates/
+│   └── php-nginx-mysql/
+│       ├── docker/
+│       │   ├── nginx/
+│       │   │   └── default.conf        # nginx 設定テンプレート
+│       │   └── php/
+│       │       └── Dockerfile          # PHP Dockerfile
+│       └── docker-compose.yml.template # Docker Compose テンプレート
+│
+├── README.md                           # 説明ファイル（そのままでOK）
+└── .gitignore                          # 設定除外リスト（任意）
+
+```
+
 
 ## 使い方
 1. 必要な実行権限を全ての.shに付与。
