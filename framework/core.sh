@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-source "$(dirname "$0")/loader.sh"
-source "$(dirname "$0")/logger.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/loader.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/logger.sh"
 
 function run_phase() {
   local phase="$1"
