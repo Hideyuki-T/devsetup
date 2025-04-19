@@ -1,25 +1,25 @@
 services:
   app:
-    container_name: app
+    container_name: ${APP_CONTAINER_NAME}
     build:
       context: .
-      dockerfile: docker/php/Dockerfile
+      dockerfile: ${PHP_DOCKERFILE}
     volumes:
       - ./src:/var/www/html
     environment:
       DB_CONNECTION: mysql
-      DB_HOST: mysql
+      DB_HOST: ${DB_HOST}
       DB_PORT: 3306
-      DB_DATABASE: 
-      DB_USERNAME: 
-      DB_PASSWORD: 
+      DB_DATABASE: ${DB_NAME}
+      DB_USERNAME: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
 
 
   web:
-    container_name: nginx
+    container_name: ${NGINX_CONTAINER_NAME}
     image: nginx:latest
     ports:
-      - "8000:80"
+      - "${WEB_PORT}:80"
     depends_on:
       - app
     volumes:
@@ -27,15 +27,15 @@ services:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
 
   db:
-    container_name: mysql
+    container_name: ${DB_CONTAINER_NAME}
     image: mysql:8.0
     ports:
-      - ":3306"
+      - "${EXTERNAL_DB_PORT}:3306"
     environment:
-      MYSQL_DATABASE: 
-      MYSQL_USER: 
-      MYSQL_PASSWORD: 
-      MYSQL_ROOT_PASSWORD: 
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       TZ: 'Asia/Tokyo'
     volumes:
       - mysql-volume:/var/lib/mysql
