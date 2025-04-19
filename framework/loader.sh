@@ -18,12 +18,15 @@ if [[ "${ENABLED[menu]:-false}" == "true" ]]; then
   ENABLED_MODULES+=("menu")
 fi
 
-# 有効モジュールを自動検出
-for dir in "$MODULE_DIR"/*; do
-  name="$(basename "$dir")"
+# --- docker → laravel を順番に ---
+for name in docker laravel; do
   if [[ "${ENABLED[$name]:-false}" == "true" ]]; then
-    # menu は既に先頭登録しているのでスキップ
-    [[ "$name" == "menu" ]] && continue
     ENABLED_MODULES+=("$name")
   fi
 done
+
+# --- breeze は最後に実行 ---
+if [[ "${ENABLED[breeze]:-false}" == "true" ]]; then
+  ENABLED_MODULES+=("breeze")
+fi
+
