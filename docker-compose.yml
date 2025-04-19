@@ -10,9 +10,9 @@ services:
       DB_CONNECTION: mysql
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_DATABASE: 
-      DB_USERNAME: 
-      DB_PASSWORD: 
+      DB_DATABASE: app
+      DB_USERNAME: me
+      DB_PASSWORD: 54321
 
 
   web:
@@ -32,10 +32,10 @@ services:
     ports:
       - ":3306"
     environment:
-      MYSQL_DATABASE: 
-      MYSQL_USER: 
-      MYSQL_PASSWORD: 
-      MYSQL_ROOT_PASSWORD: 
+      MYSQL_DATABASE: app
+      MYSQL_USER: me
+      MYSQL_PASSWORD: 54321
+      MYSQL_ROOT_PASSWORD: 12345
       TZ: 'Asia/Tokyo'
     volumes:
       - mysql-volume:/var/lib/mysql
