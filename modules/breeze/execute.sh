@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
-# Breeze モジュール実行フェーズ
+# modules/breeze/execute.sh：実行フェーズ
 
-log_info "[INFO]: modules/breeze/execute.sh: ビルド・マイグレーション実行中。。。"
+log_info "[INFO]: modules/breeze/execute.sh：Breeze の scaffolding を実行中…"
 
-# Viteのビルド（開発モード）
-docker compose exec app npm run dev &
+# src ディレクトリに移動
+cd src
 
-docker compose exec app php artisan migrate --force
+# Breeze のインストール
+php artisan breeze:install
 
-log_info "[INFO]: modules/breeze/execute.sh:Breezeセットアップ完了！"
+# マイグレーション＋ビルド
+php artisan migrate --force
+npm install
+npm run dev
+
+log_info "[SUCCESS]: modules/breeze/execute.sh：Laravel Breeze セットアップ完了"
