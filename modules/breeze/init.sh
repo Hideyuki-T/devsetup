@@ -3,10 +3,7 @@
 
 log_info "modules/breeze/init.sh:Breeze パッケージを composer でrequire 中だよ〜"
 
-# composer require 実行中
-
-docker compose exec app composer require laravel/breeze --dev
-
-log_info "modules/breeze/init.sh:テンプレートファイルをコピー中だよ！"
+# ホスト側で composer require を実行
+composer require laravel/breeze --dev
 
 log_info "modules/breeze/init.sh:初期化フェーズ完了！！"
