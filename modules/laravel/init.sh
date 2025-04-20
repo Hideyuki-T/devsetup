@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
-# Laravel モジュール：初期化フェーズ
+# modules/laravel/init.sh
 
-log_info "modules/laravel/init.sh：Laravel プロジェクトを作成中…"
-composer create-project laravel/laravel src
-log_info "modules/laravel/init.sh：プロジェクト生成完了（src ディレクトリ）"
+log_info "[INFO]: modules/laravel/init.sh：コンテナ内で Laravel プロジェクトを作成中…"
+
+docker compose exec app \
+  composer create-project laravel/laravel /var/www/html --prefer-dist
+
+log_info "[SUCCESS]: modules/laravel/init.sh：完了"

@@ -29,4 +29,3 @@ done
 if [[ "${ENABLED[breeze]:-false}" == "true" ]]; then
   ENABLED_MODULES+=("breeze")
 fi
-

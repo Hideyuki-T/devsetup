@@ -1,17 +1,11 @@
 #!/usr/bin/env bash
-# modules/breeze/execute.sh：実行フェーズ
+# modules/breeze/execute.sh
 
-log_info "[INFO]: modules/breeze/execute.sh：Breeze の scaffolding を実行中…"
+log_info "[INFO]: modules/breeze/execute.sh：コンテナ内で Breeze の scaffolding を実行中…"
+docker compose exec app bash -lc "\
+  php artisan breeze:install --ansi && \
+  npm install && npm run dev && \
+  php artisan migrate --force \
+"
 
-# src ディレクトリに移動
-cd src
-
-# Breeze のインストール
-php artisan breeze:install
-
-# マイグレーション＋ビルド
-php artisan migrate --force
-npm install
-npm run dev
-
-log_info "[SUCCESS]: modules/breeze/execute.sh：Laravel Breeze セットアップ完了"
+log_info "[SUCCESS]: modules/breeze/execute.sh：完了"

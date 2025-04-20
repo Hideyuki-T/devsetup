@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
-# breezeモジュール　初期化フェーズ
+# modules/breeze/init.sh
 
-log_info "[INFO]: modules/breeze/init.sh:Breeze パッケージを composer でrequire 中だよ〜"
+log_info "[INFO]: modules/breeze/init.sh：コンテナ内で Breeze を composer require --dev 中…"
+docker compose exec app \
+  composer require laravel/breeze --dev
 
-# ホスト側で composer require を実行
-composer require laravel/breeze --dev
-
-log_info "[SUCCESS]: modules/breeze/init.sh:初期化フェーズ完了！！"
+log_info "[SUCCESS]: modules/breeze/init.sh：完了"
