@@ -13,4 +13,4 @@ docker compose exec -T -w "$WORKDIR" "$APP" php artisan breeze:install blade
 docker compose exec -T -w "$WORKDIR" "$APP" npm install
 docker compose exec -T -w "$WORKDIR" "$APP" npm run build
 
-log_info "[SUCCESS]: modules/breeze/configure.sh：Breeze UI セットアップ完了！""
+log_info "[SUCCESS]: modules/breeze/configure.sh：Breeze UI セットアップ完了！"
