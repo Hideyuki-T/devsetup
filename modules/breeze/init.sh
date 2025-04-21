@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-# modules/breeze/init.sh：ホスト上で Breeze を require
+# modules/breeze/init.sh：Laravel BreezeをDockerコンテナ内で導入
 
-log_info "modules/breeze/init.sh：ホスト上で Breeze を composer require --dev 中…"
+log_info "[INFO]: modules/breeze/init.sh:Dockerコンテナ内で Breeze を Composer require 中..."
 
+APP="${APP_CONTAINER_NAME:-app}"
+WORKDIR="/var/www/html"
 
-composer require laravel/breeze --dev --working-dir ./src
+docker compose exec -T -w "$WORKDIR" "$APP" composer require laravel/breeze --dev
 
-log_info "modules/breeze/init.sh：完了"
+log_info "[INFO]: modules/breeze/init.sh: 完了"
