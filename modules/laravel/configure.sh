@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Laravel モジュール：設定フェーズ
 
-# 1) init で作成した .devsetup.env を読み込む
-if [[ -f .devsetup.env ]]; then
-  source .devsetup.env
+# 1) init で作成した .env を読み込む
+if [[ -f .env ]]; then
+  source .env
 else
-  log_error "modules/laravel/configure.sh: .devsetup.envが見つからないよ。。。"
+  log_error "modules/laravel/configure.sh: .envが見つからないよ。。。"
   exit 1
 fi
 

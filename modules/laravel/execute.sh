@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Laravel モジュール：実行フェーズ
 
-# .devsetup.env を読み込んでプロジェクト名を取得
-source　.devsetup.env
+# .env を読み込んでプロジェクト名を取得
+source .env
 
 docker compose up -d
 
 # DB起動まで待機
-untile docker compose exec db mysqladmin ping -h mysql --silent; do
+until docker compose exec db mysqladmin ping -h mysql --silent; do
   sleep 1
 done
 

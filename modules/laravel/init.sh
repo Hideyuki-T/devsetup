@@ -2,7 +2,8 @@
 # modules/laravel/init.sh
 
 # 1) プロジェクト名とlaravelバージョンを読み込む
-read -rp "Project name: " PROJECT
+read -rp "Project name: " PROJECT_NAME
+export PROJECT_NAME
 read -rp "Laravel version (default: 12.*):" VERSION
 VERSION=${VERSION:-12.*}
 
