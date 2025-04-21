@@ -2,7 +2,11 @@
 
 set -euo pipefail
 
-source "$(dirname "$0")/../framework/core.sh"
+DEVSETUP_ROOT="$(cd "$(dirname "$0")"../ && pwd)"
+
+cd "$DEVSETUP_ROOT/.."
+
+source "$DEVSETUP_ROOT/framework/core.sh"
 
 run_phase init
 run_phase configure
