@@ -1,21 +1,23 @@
 #!/usr/bin/env bash
-# Laravel モジュール：設定フェーズ
+# modules/laravel/configure.sh：Docker内でLaravelの.envを設定
 
-# 1) init で作成した .env を読み込む
-if [[ -f .env ]]; then
-  source .env
-else
-  log_error "modules/laravel/configure.sh: .envが見つからないよ。。。"
-  exit 1
-fi
+APP_CONTAINER_NAME="${APP_CONTAINER_NAME:-app}"
+LARAVEL_DIR="/var/www/html"
 
-# 2) 作業ディレクトリへ移動
-log_info "modules/laravel/configure.sh: DB 接続設定を反映中。。。"
+log_info "[INFO]: modules/laravel/configure.sh: Laravel の .env を調整中…"
 
-# .env.example をコピー
-cd .env.example .env 2>/dev/null || true
+# Laravelディレクトリ内に .env がなければ .env.example をコピー
+docker exec "$APP_CONTAINER_NAME" bash -c "if [[ ! -f $LARAVEL_DIR/.env ]]; then cp $LARAVEL_DIR/.env.example $LARAVEL_DIR/.env; fi"
 
-# sed でDB を更新
-sed -i '' "s/^DB_CONNECTION=.*/DB_CONNECTION=mysql/" .env
+# DB設定を sed で書き換える
+docker exec "$APP_CONTAINER_NAME" sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=mysql/' "$LARAVEL_DIR/.env"
+docker exec "$APP_CONTAINER_NAME" sed -i 's/^DB_HOST=.*/DB_HOST=mysql/' "$LARAVEL_DIR/.env"
+docker exec "$APP_CONTAINER_NAME" sed -i 's/^DB_PORT=.*/DB_PORT=3306/' "$LARAVEL_DIR/.env"
+docker exec "$APP_CONTAINER_NAME" sed -i 's/^DB_DATABASE=.*/DB_DATABASE=app/' "$LARAVEL_DIR/.env"
+docker exec "$APP_CONTAINER_NAME" sed -i 's/^DB_USERNAME=.*/DB_USERNAME=me/' "$LARAVEL_DIR/.env"
+docker exec "$APP_CONTAINER_NAME" sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=54321/' "$LARAVEL_DIR/.env"
 
-log_info "modules/laravel/configure.sh: .envへの設定完了！"
+# アプリケーションキーの生成
+docker exec "$APP_CONTAINER_NAME" php "$LARAVEL_DIR/artisan" key:generate
+
+log_info "[SUCCESS]: modules/laravel/configure.sh：.env 設定とキー生成が完了"
