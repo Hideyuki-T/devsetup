@@ -1,31 +1,29 @@
 #!/usr/bin/env bash
+# framework/loader.sh
 
-# ∞フレームワーク用ローダー：モジュール検出 & 設定読み込み
+source "$(dirname "${BASH_SOURCE[0]}")/core.sh"
 
 declare -A ENABLED
 declare -a ENABLED_MODULES=()
 
 CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../config" && pwd)"
-MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../modules" && pwd)"
 
-# デフォルト設定読み込み
+# default + user.conf を読込
 source "${CONFIG_DIR}/default.conf" || true
-# ユーザー設定があれば上書き
 [[ -f "${CONFIG_DIR}/user.conf" ]] && source "${CONFIG_DIR}/user.conf"
 
-# --- menu は常に最優先で実行 ---
-if [[ "${ENABLED[menu]:-false}" == "true" ]]; then
-  ENABLED_MODULES+=("menu")
-fi
+ENABLED_MODULES+=("menu")
 
-# --- docker → laravel を順番に ---
-for name in docker laravel; do
+# 実行順に並べる
+for name in docker laravel breeze; do
   if [[ "${ENABLED[$name]:-false}" == "true" ]]; then
     ENABLED_MODULES+=("$name")
   fi
 done
 
-# --- breeze は最後に実行 ---
-if [[ "${ENABLED[breeze]:-false}" == "true" ]]; then
-  ENABLED_MODULES+=("breeze")
-fi
+# 以降フェーズごとに
+for phase in init configure execute cleanup; do
+  for module in "${ENABLED_MODULES[@]}"; do
+    loader_call "$module" "$phase"
+  done
+done

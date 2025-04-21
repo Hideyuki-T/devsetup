@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# modules/laravel/init.sh
+# modules/laravel/init.sh：ホスト上で Laravel プロジェクトを作成
 
-# 1) プロジェクト名とlaravelバージョンを読み込む
-read -rp "Project name: " PROJECT_NAME
-export PROJECT_NAME
-read -rp "Laravel version (default: 12.*):" VERSION
-VERSION=${VERSION:-12.*}
+log_info "modules/laravel/init.sh：ホスト上で Laravel プロジェクトを作成中…"
 
-log_info "[INFO]: modules/laravel/init.sh: コンテナ内で laravelプロジェクトを作成中"
+PROJECT_DIR="./src"
+LARAVEL_VER="${LARAVEL_VERSION:-12.*}"
 
-# 2) コンテナ内で create-project を実行
-docker compose exec app \
-  composer create-project laravel/laravel "/var/html/www/${PROJECT}" "${VERSION}" --prefer-dist
-log_info "[SUCCESS]: modules/laravel/init.sh:完了 (./${PROJECT}に Laravel ${VERSION} を生成したよ。)"
+# src ディレクトリが残っていたら消しておく
+rm -rf "$PROJECT_DIR"
+
+# ホスト上で create-project → ./src に展開
+composer create-project laravel/laravel "$PROJECT_DIR" "$LARAVEL_VER" --prefer-dist
+
+log_info "modules/laravel/init.sh：完了 (プロジェクトは $PROJECT_DIR に作成されました)"
