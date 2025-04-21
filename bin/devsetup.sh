@@ -3,10 +3,9 @@
 set -euo pipefail
 
 DEVSETUP_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-
 cd "$DEVSETUP_ROOT/.."
 
-source "$DEVSETUP_ROOT/framework/core.sh"
+source "$DEVSETUP_ROOT/framework/loader.sh"
 
 run_phase init
 run_phase configure

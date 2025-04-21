@@ -23,7 +23,5 @@ done
 
 # 以降フェーズごとに
 for phase in init configure execute cleanup; do
-  for module in "${ENABLED_MODULES[@]}"; do
-    loader_call "$module" "$phase"
-  done
+  run_phase "$phase"
 done
