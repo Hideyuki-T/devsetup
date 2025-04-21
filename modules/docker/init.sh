@@ -8,7 +8,17 @@ mkdir -p docker
 
 cp -R templates/php-nginx-mysql/docker/* docker/
 
+if ! [[ -d templates/php-nginx-mysql/docker ]]; then
+  log_error "テンプレートが見つからないよ。。。存在を確認してください。"
+  exit 1
+fi
+
 cp templates/php-nginx-mysql/docker-compose.yml.template docker-compose.yml.template
+
+if ! command -v docker &> /dev/null; then
+  log_error "Docker がインストールされてないよ〜。。。インストールしてね。"
+  exit 1
+fi
 
 log_info "[SUCCESS]: modules/docker/init.sh：コピー完了"
 docker compose up -d --build
