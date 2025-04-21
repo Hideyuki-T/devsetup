@@ -1,8 +1,21 @@
 #!/usr/bin/env bash
-# modules/menu/init.sh：選択メニュー
+# modules/menu/init.sh：選択メニュー＋プロジェクト作成
 
 log_info "modules/menu/init.sh：メニューを表示"
 
+read -rp "プロジェクト名はどうします？: " PROJECT_NAME
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT_DIR="$(dirname "$SCRIPT_DIR")"
+PROJECT_PATH="${ROOT_DIR}/${PROJECT_NAME}"
+
+# プロジェクト作成
+mkdir -p "$PROJECT_PATH"
+cd "$PROJECT_PATH"
+
+log_info "プロジェクトディレクトリを作成しました：$PROJECT_PATH"
+
+# 構成選択
 echo "メニュー："
 echo " [1] PHP + nginx + MySQL"
 echo " [2] PHP + nginx + MySQL + Laravel"
@@ -14,8 +27,7 @@ if ! [[ "$choice" =~ ^[1-3]$ ]]; then
   exit 1
 fi
 
-# user.conf に書き出し
-cat > "${CONFIG_DIR}/user.conf" <<EOF
+cat > "${SCRIPT_DIR}/config/user.conf" <<EOF
 # 自動生成されたユーザ設定
 declare -A ENABLED=(
   [menu]=true
