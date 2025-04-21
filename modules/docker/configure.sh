@@ -1,9 +1,15 @@
-# modules/docker/configure.sh
 #!/usr/bin/env bash
 # Docker モジュール：設定フェーズ
 
 log_info "modules/docker/configure.sh：ポート番号を選択してね。"
 read -rp "使用したいポート番号を入力してね。： " port
+
+if ! [[ "$port" =~ ^[0-9]+$ ]]; then
+  log_error "ポート番号は数字で入力してくださいね:)"
+  exit 1
+fi
+
+log_info "modules/docker/configure.sh:ポート番号確認 -> $port"
 
 log_info "modules/docker/configure.sh：.env を生成中…"
 cat > .env <<EOL
