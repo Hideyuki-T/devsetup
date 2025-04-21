@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-DEVSETUP_ROOT="$(cd "$(dirname "$0")"../ && pwd)"
+DEVSETUP_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 cd "$DEVSETUP_ROOT/.."
 
