@@ -1,27 +1,35 @@
 #!/usr/bin/env bash
-# framework/loader.sh
+set -euo pipefail
+pop_var_context(){ :; }
 
-source "$(dirname "${BASH_SOURCE[0]}")/core.sh"
+# 1) プロジェクトルート定義
+DEVSETUP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-declare -A ENABLED
-declare -a ENABLED_MODULES=()
+# 2) 共通ロジック読み込み（run_phase や log_* を提供）
+source "${DEVSETUP_ROOT}/framework/core.sh"
 
-CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../config" && pwd)"
+# 3) 設定ファイルディレクトリ
+CONFIG_DIR="${DEVSETUP_ROOT}/config"
 
-# default + user.conf を読込
-source "${CONFIG_DIR}/default.conf" || true
+# 4) default.conf の存在チェック＆読み込み
+[[ -f "${CONFIG_DIR}/default.conf" ]] \
+  || { echo "必須: default.conf が見つかりません (${CONFIG_DIR})"; exit 1; }
+source "${CONFIG_DIR}/default.conf"
+
+# 5) user.conf があれば読み込み
 [[ -f "${CONFIG_DIR}/user.conf" ]] && source "${CONFIG_DIR}/user.conf"
 
+# 6) 有効モジュール配列の初期化
+declare -A ENABLED
+declare -a ENABLED_MODULES=()
 ENABLED_MODULES+=("menu")
 
-# 実行順に並べる
+# 7) default.conf／user.conf で有効フラグが立ったモジュールを追加
 for name in docker laravel breeze; do
-  if [[ "${ENABLED[$name]:-false}" == "true" ]]; then
-    ENABLED_MODULES+=("$name")
-  fi
+  [[ "${ENABLED[$name]:-false}" == "true" ]] && ENABLED_MODULES+=("$name")
 done
 
-# 以降フェーズごとに
-for phase in init configure execute cleanup; do
-  run_phase "$phase"
-done
+# 8) モジュールが menu のみならお知らせ
+if [[ "${#ENABLED_MODULES[@]}" -le 1 ]]; then
+  log_info "有効モジュールは menu のみですよ。"
+fi

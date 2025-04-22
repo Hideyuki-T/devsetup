@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+pop_var_context(){ :; }
+
 DEVSETUP_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$DEVSETUP_ROOT/.."
 

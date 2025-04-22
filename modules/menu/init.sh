@@ -1,40 +1,33 @@
 #!/usr/bin/env bash
-# modules/menu/init.sh：選択メニュー＋プロジェクト作成
+# modules/menu/init.sh：プロジェクト作成フェーズ
 
-log_info "modules/menu/init.sh：メニューを表示"
-
+# 1) 対話式でプロジェクト名を取得
 read -rp "プロジェクト名はどうします？: " PROJECT_NAME
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-PROJECT_PATH="${ROOT_DIR}/${PROJECT_NAME}"
+# 2) Projects ディレクトリ直下に一度だけ作成
+BASE_DIR="${DEVSETUP_ROOT}/.."
+PROJECT_DIR="${BASE_DIR}/${PROJECT_NAME}"
+mkdir -p "${PROJECT_DIR}"
+export PROJECT_DIR
 
-# プロジェクト作成
-mkdir -p "$PROJECT_PATH"
-cd "$PROJECT_PATH"
+# 3) ログ出力
+log_info "modules/menu/init.sh：プロジェクトディレクトリを作成しました：${PROJECT_DIR}"
 
-log_info "プロジェクトディレクトリを作成しました：$PROJECT_PATH"
-
-# 構成選択
-echo "メニュー："
-echo " [1] PHP + nginx + MySQL"
-echo " [2] PHP + nginx + MySQL + Laravel"
-echo " [3] PHP + nginx + MySQL + Laravel + Breeze"
-read -p "番号を選択してね。: " choice
-
-if ! [[ "$choice" =~ ^[1-3]$ ]]; then
-  log_error "無効な選択肢ですよ。１〜３を選んでね。"
-  exit 1
-fi
-
-cat > "${SCRIPT_DIR}/config/user.conf" <<EOF
-# 自動生成されたユーザ設定
-declare -A ENABLED=(
-  [menu]=true
-  [docker]=true
-$( if [[ "$choice" -ge 2 ]]; then echo "  [laravel]=true"; else echo "  [laravel]=false"; fi )
-$( if [[ "$choice" -eq 3 ]]; then echo "  [breeze]=true";  else echo "  [breeze]=false";  fi )
-)
+# 4) 構成メニュー表示
+cat << 'EOF'
+メニュー：
+ [1] PHP + nginx + MySQL
+ [2] PHP + nginx + MySQL + Laravel
+ [3] PHP + nginx + MySQL + Laravel + Breeze
 EOF
+read -rp "番号を選択してね。: " SELECTED
 
-log_info "有効化される構成: docker$( [[ "$choice" -ge 2 ]] && echo ", laravel" )$( [[ "$choice" -eq 3 ]] && echo ", breeze" )"
+# 5) 有効化フラグ設定
+case "$SELECTED" in
+  1) ENABLED[docker]=true ;;
+  2) ENABLED[docker]=true; ENABLED[laravel]=true ;;
+  3) ENABLED[docker]=true; ENABLED[laravel]=true; ENABLED[breeze]=true ;;
+  *) log_error "無効な選択です"; exit 1 ;;
+esac
+
+log_info "modules/menu/init.sh：有効化される構成: $(printf '%s ' "${!ENABLED[@]}")"
