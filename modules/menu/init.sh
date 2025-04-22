@@ -30,4 +30,17 @@ case "$SELECTED" in
   *) log_error "無効な選択です"; exit 1 ;;
 esac
 
-log_info "modules/menu/init.sh：有効化される構成: $(printf '%s ' "${!ENABLED[@]}")"
+function show_actives() {
+  local a=()
+  for m in "${!ENABLED[@]}"; do
+    [[ "${ENABLED[$m]}" == true ]] && a+=("$m")
+  done
+  log_info "modules/menu/init.sh：有効化される構成: ${a[*]}"
+}
+show_actives
+
+for mod in "${!ENABLED[@]}"; do
+  if [[ "${ENABLED[$mod]}" == true ]] && [[ ! " ${ENABLED_MODULES[*]} " =~ " ${mod} " ]]; then
+    ENABLED_MODULES+=("$mod")
+  fi
+done

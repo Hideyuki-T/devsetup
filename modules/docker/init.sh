@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
-# Docker モジュール：初期化フェーズ
+# modules/docker/init.sh：Docker 初期化フェーズ
+
+set -euo pipefail
 
 log_info "modules/docker/init.sh：テンプレートをコピー中…"
 
-# 出力先ディレクトリを作成
+# 1) プロジェクト内に docker ディレクトリを作成
 mkdir -p "${PROJECT_DIR}/docker"
 
-# Dockerfile 等をコピー
+# 2) Dockerfile 等をホスト側テンプレートからコピー
 cp -R "${DEVSETUP_ROOT}/templates/php-nginx-mysql/docker/"* "${PROJECT_DIR}/docker/"
 
-# docker-compose テンプレートは一旦プロジェクト直下に置く
-cp "${DEVSETUP_ROOT}/templates/php-nginx-mysql/docker-compose.yml.template" \
-   "${PROJECT_DIR}/docker-compose.yml.template"
-
-log_info "modules/docker/init.sh：コピー完了"
+log_info "modules/docker/init.sh：コピー完了 （docker ディレクトリのみ）"

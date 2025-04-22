@@ -1,33 +1,30 @@
 #!/usr/bin/env bash
-# modules/laravel/execute.sh：コンテナ内で依存インストール＆マイグレーション
+# modules/laravel/execute.sh：Laravel 実行フェーズ
 
-log_info "[INFO]: modules/laravel/execute.sh：コンテナ内で依存インストールとマイグレーションを実行中…"
+log_info "modules/laravel/execute.sh：Artisan 処理の前に DB の準備を待機中…"
 
-# 古いコンテナ・ボリュームを破棄
-docker compose down -v
+(
+  cd "${PROJECT_DIR}"
 
-# コンテナ起動
-log_info "[INFO]: modules/laravel/execute.sh：docker-compose を起動中…"
-docker compose up -d
+  # ① Docker コンテナが立ち上がったあと MySQL の準備完了を待つ
+  for i in {1..15}; do
+    if docker compose exec -T db mysqladmin ping -h db --silent; then
+      log_info "MySQL が応答しました（${i}秒経過）"
+      break
+    fi
+    log_debug "MySQL 未準備…待機中 (${i}/15)"
+    sleep 1
+    if (( i == 15 )); then
+      log_error "応答しませんね……"
+      exit 1
+    fi
+  done
 
-# DB が立ち上がるまで待機
-log_info "[INFO]: modules/laravel/execute.sh：DBコンテナの起動待ち…"
-until docker compose exec -T db mysqladmin ping -h $DB_HOST --silent; do
-  sleep 1
-  log_debug "[INFO]: DBコンテナ応答待機中…"
-done
+  # ② アプリケーションキー生成
+  docker compose exec app php artisan key:generate
+  log_info "キー生成完了"
 
-# 以降はコンテナ内の /var/www/html に対して実行
-APP="${APP_CONTAINER_NAME:-app}"
-WORKDIR="/var/www/html"
-
-log_info "[INFO]: modules/laravel/execute.sh：Composer install…"
-docker compose exec -T -w "$WORKDIR" $APP composer install --no-interaction --prefer-dist
-
-log_info "[INFO]: modules/laravel/execute.sh：キー生成…"
-docker compose exec -T -w "$WORKDIR" $APP php artisan key:generate
-
-log_info "[INFO]: modules/laravel/execute.sh：マイグレーション実行…"
-docker compose exec -T -w "$WORKDIR" $APP php artisan migrate:fresh --force
-
-log_info "[SUCCESS]: modules/laravel/execute.sh：Laravel セットアップ完了"
+  # ③ 全テーブルをリセット＆再作成＋シード
+  docker compose exec app php artisan migrate:fresh --force --seed
+  log_info "migrate:fresh でテーブルをまっさらにして再作成しましたよ！"
+)
