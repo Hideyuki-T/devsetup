@@ -1,16 +1,7 @@
 #!/usr/bin/env bash
-# modules/breeze/configure.sh：設定フェーズ
+# modules/breeze/configure.sh：ファイル準備のみ（実行しない）
 
-log_info "[INFO]: modules/breeze/configure.sh：Docker コンテナ内で Breeze UI をインストール中..."
+set -euo pipefail
 
-APP="${APP_CONTAINER_NAME:-app}"
-WORKDIR="/var/www/html"
-
-# Breeze のスキャフォールをBladeで構築中
-docker compose exec -T -w "$WORKDIR" "$APP" php artisan breeze:install blade
-
-# フロントエンドビルド
-docker compose exec -T -w "$WORKDIR" "$APP" npm install
-docker compose exec -T -w "$WORKDIR" "$APP" npm run build
-
-log_info "[SUCCESS]: modules/breeze/configure.sh：Breeze UI セットアップ完了！"
+# Configure フェーズでビルドせず、Execute フェーズに移譲。
+log_debug "modules/breeze/configure.sh：Configure フェーズ、特に処理なし"

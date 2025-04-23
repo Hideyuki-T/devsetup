@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
-# modules/breeze/init.sh：Laravel BreezeをDockerコンテナ内で導入
+# modules/breeze/init.sh：ファイル準備のみ（実行しない）
 
-log_info "[INFO]: modules/breeze/init.sh:Dockerコンテナ内で Breeze を Composer require 中..."
+set -euo pipefail
 
-APP="${APP_CONTAINER_NAME:-app}"
-WORKDIR="/var/www/html"
-
-docker compose exec -T -w "$WORKDIR" "$APP" composer require laravel/breeze --dev
-
-log_info "[INFO]: modules/breeze/init.sh: 完了"
+log_debug "modules/breeze/init.sh：Init フェーズ、特に処理なし"

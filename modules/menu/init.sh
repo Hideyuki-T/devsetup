@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # modules/menu/init.sh：プロジェクト作成フェーズ
 
+ENABLED_MODULES=()
+declare -A ENABLED
+export ENABLED_MODULES
+
+
 # 1) 対話式でプロジェクト名を取得
 read -rp "プロジェクト名はどうします？: " PROJECT_NAME
 
