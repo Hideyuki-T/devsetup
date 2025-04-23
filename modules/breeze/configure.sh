@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
-# modules/breeze/configure.sh：設定フェーズ
+# modules/breeze/configure.sh：ファイル準備のみ（実行しない）
 
-log_info "[INFO]: modules/breeze/configure.sh：特に設定はありません。"
+set -euo pipefail
+
+# Configure フェーズでビルドせず、Execute フェーズに移譲。
+log_debug "modules/breeze/configure.sh：Configure フェーズ、特に処理なし"

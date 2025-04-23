@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
-source "$(dirname "$0")/../framework/core.sh"
+# pop_var_context の未定義エラーを無害化
+pop_var_context(){ :; }
 
-run_phase init
-run_phase configure
-run_phase execute
-run_phase cleanup
+# プロジェクトルート定義
+DEVSETUP_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+
+source "$DEVSETUP_ROOT/framework/loader.sh"

@@ -1,40 +1,44 @@
-# modules/docker/configure.sh
 #!/usr/bin/env bash
-# Docker モジュール：設定フェーズ
+# modules/docker/configure.sh：Docker 設定フェーズ
 
-log_info "modules/docker/configure.sh：ポート番号を選択してね。"
+# 1) ログ出力＋ポート番号読み取り
+log_info "modules/docker/configure.sh：使用したいポート番号を選択してください。"
 read -rp "使用したいポート番号を入力してね。： " port
+if ! [[ "$port" =~ ^[0-9]+$ ]]; then
+  log_error "ポート番号は数字で入力してくださいね"
+  exit 1
+fi
+log_info "modules/docker/configure.sh：ポート番号確認 -> ${port}"
 
-log_info "modules/docker/configure.sh：.env を生成中…"
-cat > .env <<EOL
+# 2) PROJECT_DIR へ移動して処理を完結
+(
+  cd "${PROJECT_DIR}"
+
+  # 3) .env を生成
+  log_info "modules/docker/configure.sh：.env ファイルを生成中…"
+  cat > .env <<EOL
 APP_ENV=local
 APP_DEBUG=true
 APP_URL=http://localhost:${port}
 DB_CONNECTION=mysql
-DB_HOST=mysql
+DB_HOST=db
 DB_PORT=3306
-DB_NAME=app
-# ルートユーザーの固定パスワード
+DB_NAME=${PROJECT_NAME}
 DB_ROOT_PASSWORD=12345
-# 一般ユーザー "me" の固定認証情報
 DB_USER=me
 DB_PASSWORD=54321
 PHP_DOCKERFILE=docker/php/Dockerfile
-NGINX_CONTAINER_NAME=nginx
-APP_CONTAINER_NAME=app
+NGINX_CONTAINER_NAME=${PROJECT_NAME}_nginx
+APP_CONTAINER_NAME=${PROJECT_NAME}_app
 WEB_PORT=${port}
-DB_CONTAINER_NAME=mysql
+DB_CONTAINER_NAME=${PROJECT_NAME}_db
 EOL
+  log_info "modules/docker/configure.sh：.env を作成しました：${PROJECT_DIR}/.env"
 
-log_info "modules/docker/configure.sh：設定完了 (.env に認証情報を反映しました)"
-
-# docker-compose.yml の再生成
-log_info "modules/docker/configure.sh：docker-compose.yml を生成中…"
-set -o allexport
-source .env
-set +o allexport
-
-docker compose down -v
-
-envsubst < templates/php-nginx-mysql/docker-compose.yml.template > docker-compose.yml
-log_info "modules/docker/configure.sh：docker-compose.yml を生成しました。"
+  # 4) docker-compose.yml を生成
+  log_info "modules/docker/configure.sh：docker-compose.yml を生成中…"
+  set -a; source .env; set +a
+  envsubst < "${DEVSETUP_ROOT}/templates/php-nginx-mysql/docker-compose.yml.template" \
+           > docker-compose.yml
+  log_info "modules/docker/configure.sh：docker-compose.yml を作成しました：${PROJECT_DIR}/docker-compose.yml"
+)

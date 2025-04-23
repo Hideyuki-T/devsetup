@@ -1,31 +1,48 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-# ∞フレームワーク用ローダー：モジュール検出 & 設定読み込み
+# pop_var_context の未定義エラー無害化
+pop_var_context(){ :; }
 
-declare -A ENABLED
-declare -a ENABLED_MODULES=()
+# プロジェクトルート定義
+DEVSETUP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../config" && pwd)"
-MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../modules" && pwd)"
+# 共通ロジック読み込み（run_phase, log_*）
+source "${DEVSETUP_ROOT}/framework/core.sh"
 
-# デフォルト設定読み込み
-source "${CONFIG_DIR}/default.conf" || true
-# ユーザー設定があれば上書き
+# 設定ファイル読み込み
+CONFIG_DIR="${DEVSETUP_ROOT}/config"
+[[ -f "${CONFIG_DIR}/default.conf" ]] || {
+  echo "必須: default.conf が見つかりません (${CONFIG_DIR})"
+  exit 1
+}
+source "${CONFIG_DIR}/default.conf"
 [[ -f "${CONFIG_DIR}/user.conf" ]] && source "${CONFIG_DIR}/user.conf"
 
-# --- menu は常に最優先で実行 ---
-if [[ "${ENABLED[menu]:-false}" == "true" ]]; then
-  ENABLED_MODULES+=("menu")
-fi
+# 有効モジュール用配列を初期化（menu フェーズのみ）
+declare -A ENABLED
+declare -a ENABLED_MODULES=(menu)
 
-# --- docker → laravel を順番に ---
-for name in docker laravel; do
-  if [[ "${ENABLED[$name]:-false}" == "true" ]]; then
-    ENABLED_MODULES+=("$name")
-  fi
+# INIT フェーズ実行 → menu/init.sh が走り、PROJECT_DIR などを設定
+run_phase init
+
+# メニューで立てられた ENABLED[...] を反映して、モジュールリストを再構築
+MODULES=(docker laravel breeze)
+INIT_MODULES=(menu)
+for mod in "${MODULES[@]}"; do
+  [[ "${ENABLED[$mod]:-false}" == "true" ]] && INIT_MODULES+=("$mod")
 done
 
-# --- breeze は最後に実行 ---
-if [[ "${ENABLED[breeze]:-false}" == "true" ]]; then
-  ENABLED_MODULES+=("breeze")
-fi
+# 各モジュールの init フェーズ（menu は不要）
+log_info "=== MODULE INIT フェーズ開始 ==="
+for mod in "${INIT_MODULES[@]}"; do
+  [[ "$mod" == "menu" ]] && continue
+  log_info "→ ${mod}：init 実行"
+  source "${DEVSETUP_ROOT}/modules/${mod}/init.sh"
+done
+log_info "=== MODULE INIT フェーズ終了 ==="
+
+# configure → execute → cleanup フェーズを一度ずつ実行
+for phase in configure execute cleanup; do
+  run_phase "$phase"
+done

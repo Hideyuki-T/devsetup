@@ -1,33 +1,51 @@
 #!/usr/bin/env bash
+# modules/menu/init.sh：プロジェクト作成フェーズ
 
-echo "メニュー："
-echo " [1] PHP + nginx + MySQL"
-echo " [2] PHP + nginx + MySQL + Laravel"
-echo " [3] PHP + nginx + MySQL + Laravel + Breeze"
-echo ""
+ENABLED_MODULES=()
+declare -A ENABLED
+export ENABLED_MODULES
 
-read -rp "番号を選択してください。: " choice
 
-#　config/user.conf を空に（既存設定のリセット）
-: > config/user.conf
+# 1) 対話式でプロジェクト名を取得
+read -rp "プロジェクト名はどうします？: " PROJECT_NAME
 
-case "$choice" in
-  1)
-    echo 'ENABLED["docker"]=true'      >> config/user.conf
-    ;;
-  2)
-    echo 'ENABLED["docker"]=true'      >> config/user.conf
-    echo 'ENABLED["laravel"]=true'     >> config/user.conf
-    ;;
-  3)
-    echo 'ENABLED["docker"]=true'      >> config/user.conf
-    echo 'ENABLED["laravel"]=true'     >> config/user.conf
-    echo 'ENABLED["breeze"]=true'      >> config/user.conf
-    ;;
-  *)
-    echo "無効な選択です…"
-    exit 1
-    ;;
+# 2) Projects ディレクトリ直下に一度だけ作成
+BASE_DIR="${DEVSETUP_ROOT}/.."
+PROJECT_DIR="${BASE_DIR}/${PROJECT_NAME}"
+mkdir -p "${PROJECT_DIR}"
+export PROJECT_DIR
+
+# 3) ログ出力
+log_info "modules/menu/init.sh：プロジェクトディレクトリを作成しました：${PROJECT_DIR}"
+
+# 4) 構成メニュー表示
+cat << 'EOF'
+メニュー：
+ [1] PHP + nginx + MySQL
+ [2] PHP + nginx + MySQL + Laravel
+ [3] PHP + nginx + MySQL + Laravel + Breeze
+EOF
+read -rp "番号を選択してね。: " SELECTED
+
+# 5) 有効化フラグ設定
+case "$SELECTED" in
+  1) ENABLED[docker]=true ;;
+  2) ENABLED[docker]=true; ENABLED[laravel]=true ;;
+  3) ENABLED[docker]=true; ENABLED[laravel]=true; ENABLED[breeze]=true ;;
+  *) log_error "無効な選択です"; exit 1 ;;
 esac
 
-echo "選択内容を config/user.conf に保存しました！"
+function show_actives() {
+  local a=()
+  for m in "${!ENABLED[@]}"; do
+    [[ "${ENABLED[$m]}" == true ]] && a+=("$m")
+  done
+  log_info "modules/menu/init.sh：有効化される構成: ${a[*]}"
+}
+show_actives
+
+for mod in "${!ENABLED[@]}"; do
+  if [[ "${ENABLED[$mod]}" == true ]] && [[ ! " ${ENABLED_MODULES[*]} " =~ " ${mod} " ]]; then
+    ENABLED_MODULES+=("$mod")
+  fi
+done

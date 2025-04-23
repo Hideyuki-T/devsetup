@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
-# modules/breeze/init.sh
+# modules/breeze/init.sh：ファイル準備のみ（実行しない）
 
-log_info "[INFO]: modules/breeze/init.sh：コンテナ内で Breeze を composer require --dev 中…"
-docker compose exec app \
-  composer require laravel/breeze --dev
+set -euo pipefail
 
-log_info "[SUCCESS]: modules/breeze/init.sh：完了"
+log_debug "modules/breeze/init.sh：Init フェーズ、特に処理なし"

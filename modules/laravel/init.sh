@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# modules/laravel/init.sh
+# modules/laravel/init.sh：ホスト側で Laravel プロジェクトを src/ に生成
 
-log_info "[INFO]: modules/laravel/init.sh：コンテナ内で Laravel プロジェクトを作成中…"
+log_info "modules/laravel/init.sh：ホストの src/ に Laravel を生成中…"
 
-docker compose exec app \
-  composer create-project laravel/laravel /var/www/html --prefer-dist
+# PROJECT_DIR/src に Laravel ルートをインストール
+composer create-project laravel/laravel "${PROJECT_DIR}/src" --quiet
 
-log_info "[SUCCESS]: modules/laravel/init.sh：完了"
+log_info "modules/laravel/init.sh：生成完了 → ${PROJECT_DIR}/src"
