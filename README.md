@@ -36,14 +36,20 @@
   現在は PHP + nginx + MySQL + Laravel に特化しているが、将来的には Django、Symfony、Express など、必要だと思ったフレームワークおよびプラットフォームに対応可能な構造を備えている。
 
 ## メニュー構成（2025‑04-17-10:00 現在）
-
-| 番号 | 構成テンプレート                       | 備考                             |
-|----|--------------------------------|--------------------------------|
-| 1  | PHP+nginx+MySQL                | 素の LEMP                        |
-| 2  | PHP+nginx+MySQL+Laravel        | バージョン指定可・マイグレーション選択可           |
-| 3  | PHP+nginx+MySQL+Laravel+Breeze | UI 認証付き・vite ビルド自動・migrate 選択可 |
-|    |                                |                                |
-
+<table>
+<tr>
+<th>メニュー番号</th><th>構成テンプレート</th><th>備考</th>
+</tr>
+<tr>
+<th>1</th><th>PHP+nginx+MySQL</th><th>素の LEMP</th>
+</tr>
+<tr>
+<th>2</th><th>PHP+nginx+MySQL+Laravel  </th><th>バージョン指定可・マイグレーション選択可</th>
+</tr>
+<tr>
+<th>3</th><th>PHP+nginx+MySQL+Laravel+Breeze</th><th>UI 認証付き・vite ビルド自動・migrate 選択可</th>
+</tr>
+</table>
 
 追加テンプレートは随時拡張予定。
 
