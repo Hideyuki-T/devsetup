@@ -51,12 +51,47 @@
 ## ディレクトリ構造
 ```
 .
-├── devsetup.sh
+├── bin
+│   └── devsetup.sh
+├── config
+│   ├── default.conf
+│   └── user.conf
+├── docker
+│   ├── nginx
+│   │   └── default.conf
+│   └── php
+│       └── Dockerfile
+├── docker-compose.yml
+├── docker-compose.yml.template
+├── framework
+│   ├── core.sh
+│   ├── loader.sh
+│   └── logger.sh
 ├── functions
 │   ├── compose_generator.sh
 │   ├── env_generator.sh
 │   ├── logger.sh
 │   └── port_checker.sh
+├── Makefile
+├── modules
+│   ├── breeze
+│   │   ├── cleanup.sh
+│   │   ├── configure.sh
+│   │   ├── execute.sh
+│   │   └── init.sh
+│   ├── docker
+│   │   ├── cleanup.sh
+│   │   ├── configure.sh
+│   │   ├── execute.sh
+│   │   └── init.sh
+│   ├── laravel
+│   │   ├── cleanup.sh
+│   │   ├── configure.sh
+│   │   ├── execute.sh
+│   │   └── init.sh
+│   └── menu
+│       ├── cleanup.sh
+│       └── init.sh
 ├── README.md
 ├── scripts
 │   ├── build_base.sh
@@ -70,6 +105,7 @@
         │   └── php
         │       └── Dockerfile
         └── docker-compose.yml.template
+
 ```
 
 ## ∞フレームワーク適用後のディレクトリ構成案（改訂版）
