@@ -1,3 +1,15 @@
+<table>
+<tr>
+<th>ID</th><th>優先TODO</th>
+</tr>
+<tr>
+<th>1</th><th>nginx +php + MySQL + laravel + BREEZE + OAuth までの初期設定を自動化</th>
+</tr>
+<tr>
+<th>2</th><th></th>
+</tr>
+</table>
+
 # 注意事項
 
 - **開発環境向け:**  
