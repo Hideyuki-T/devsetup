@@ -27,7 +27,7 @@ declare -a ENABLED_MODULES=(menu)
 run_phase init
 
 # メニューで立てられた ENABLED[...] を反映して、モジュールリストを再構築
-MODULES=(docker laravel breeze)
+MODULES=(docker laravel breeze oauth)
 INIT_MODULES=(menu)
 for mod in "${MODULES[@]}"; do
   [[ "${ENABLED[$mod]:-false}" == "true" ]] && INIT_MODULES+=("$mod")
