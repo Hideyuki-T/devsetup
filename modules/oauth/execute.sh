@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-# modules/oauth/execute.sh
 # modules/oauth/execute.sh：OAuthモジュール実行フェーズ
 ```bash
 
