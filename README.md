@@ -61,6 +61,9 @@
 <tr>
 <th>3</th><th>PHP+nginx+MySQL+Laravel+Breeze</th><th>UI 認証付き・vite ビルド自動・migrate 選択可</th>
 </tr>
+<tr>
+<th>4</th><th>PHP + nginx + MySQL + Laravel + Breeze + OAuth</th><th>Docker環境でOAuthまでをワンショット</th>
+</tr>
 </table>
 
 追加テンプレートは随時拡張予定。
@@ -107,8 +110,13 @@
 │   │   ├── configure.sh
 │   │   ├── execute.sh
 │   │   └── init.sh
-│   └── menu
+│   ├── menu
+│   │   ├── cleanup.sh
+│   │   └── init.sh
+│   └── oauth
 │       ├── cleanup.sh
+│       ├── configure.sh
+│       ├── execute.sh
 │       └── init.sh
 ├── README.md
 ├── scripts
@@ -123,7 +131,6 @@
         │   └── php
         │       └── Dockerfile
         └── docker-compose.yml.template
-
 ```
 
 ## ∞フレームワーク適用後のディレクトリ構成案（改訂版）
