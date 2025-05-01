@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# pop_var_context の未定義エラー無害化
+# pop_var_context の未定義エラーを無害化
 pop_var_context(){ :; }
 
 # プロジェクトルート定義
@@ -23,11 +23,12 @@ source "${CONFIG_DIR}/default.conf"
 declare -A ENABLED
 declare -a ENABLED_MODULES=(menu)
 
-# INIT フェーズ実行 → menu/init.sh が走り、PROJECT_DIR などを設定
+# INIT フェーズ実行 → modules/menu/init.sh が走り、PROJECT_DIR などを設定
 run_phase init
 
 # メニューで立てられた ENABLED[...] を反映して、モジュールリストを再構築
-MODULES=(docker laravel breeze oauth)
+# 実行順序を Laravel → Docker → Breeze → OAuth に設定
+MODULES=(laravel docker breeze oauth)
 INIT_MODULES=(menu)
 for mod in "${MODULES[@]}"; do
   [[ "${ENABLED[$mod]:-false}" == "true" ]] && INIT_MODULES+=("$mod")
