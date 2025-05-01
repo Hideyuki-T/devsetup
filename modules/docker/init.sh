@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 # modules/docker/init.sh：Docker 初期化フェーズ
 

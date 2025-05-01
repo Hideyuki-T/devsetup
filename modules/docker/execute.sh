@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 # Docker モジュール：実行フェーズ
 
