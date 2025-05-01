@@ -55,7 +55,7 @@ for mod in "${!ENABLED[@]}"; do
 done
 
 # 7) 優先順位に基づく並び替え
-declare -a priority_order=(docker laravel breeze oauth)
+declare -a priority_order=(laravel docker breeze oauth)
 declare -a ordered_modules=()
 for name in "${priority_order[@]}"; do
   for m in "${ENABLED_MODULES[@]}"; do
