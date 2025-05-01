@@ -35,24 +35,14 @@ log_info "Composer 依存の追加（laravel/socialite）を開始します"
 )
 log_info "Composer 依存の追加が完了しました"
 
-
-# 3) config/services.php に Google 設定をパッチ適用
-(
-  cd "${PROJECT_DIR}/src" || exit 1
-patch -p1 << 'EOF'
-*** Begin Patch
-*** Update File: src/config/services.php
-@@
-    // 既存の設定...
-+     'google' => [
-+         'client_id' => env('GOOGLE_CLIENT_ID'),
-+         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-+         'redirect' => env('GOOGLE_REDIRECT_URI'),
-+     ],
-*** End Patch
-EOF
-)
-log_info "config/services.php の更新が完了しました"
+# 3) services.php の配列末尾 ('];') の直前に google 設定を挿入
+sed -i '' '/^];/i \
+    '\''google'\'' => [\
+        '\''client_id'\''     => env('\''GOOGLE_CLIENT_ID'\''),\
+        '\''client_secret'\'' => env('\''GOOGLE_CLIENT_SECRET'\''),\
+        '\''redirect'\''      => env('\''GOOGLE_REDIRECT_URI'\''),\
+    ],' "${PROJECT_DIR}/src/config/services.php"
+log_info "config/services.php に Google 設定を正しく挿入しました"
 
 
 # 4) OAuthController を生成
@@ -89,8 +79,15 @@ class OAuthController extends Controller
 EOF
 log_info "OAuthController を作成しました"
 
-# 5) ルート追記
-cat << 'EOF' >> "${PROJECT_DIR}/src/routes/web.php"
+# 5) ルート追記（パス修正版）
+TARGET="${PROJECT_DIR}/src/routes/web.php"
+
+# 存在チェック
+if [ ! -f "$TARGET" ]; then
+  log_info "routes/web.php が見つかりません：$TARGET。スキップしますわ"
+else
+  log_info "src/routes/web.php に OAuth ルートを追記中…"
+  cat << 'EOF' >> "$TARGET"
 
 use App\Http\Controllers\OAuthController;
 
@@ -98,10 +95,13 @@ use App\Http\Controllers\OAuthController;
 Route::get('/login/google', [OAuthController::class, 'redirect']);
 Route::get('/login/google/callback', [OAuthController::class, 'callback']);
 EOF
-log_info "routes/web.php に OAuth ルートを追記しました"
+  log_info "src/routes/web.php への追記が完了しました"
+fi
+
 
 # 6) ログインビュー生成
-cat << 'EOF' > "${PROJECT_DIR}/src/resources/views/auth/login.blade.php"
+mkdir -p "${PROJECT_DIR}/resources/views/auth"
+cat << 'EOF' > "${PROJECT_DIR}/resources/views/auth/login.blade.php"
 @extends('layouts.app')
 
 @section('content')
@@ -124,16 +124,20 @@ EOF
 log_info "auth/login.blade.php を生成しました"
 
 # 7) ナビゲーションにログアウトボタン追加
-NAV_FILE="${PROJECT_DIR}/src/resources/views/layouts/navigation.blade.php"
-if ! grep -q "route('logout')" "$NAV_FILE"; then
-  sed -i "/<\/nav>/i \
-  <form method=\"POST\" action=\"{{ route('logout') }}\" class=\"inline\">\
-  @csrf\
-  <button type=\"submit\" class=\"px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600\">ログアウト</button>\
-  </form>" "$NAV_FILE"
-  log_info "navigation.blade.php にログアウトボタンを追加しました"
+NAV_DIR="${PROJECT_DIR}/resources/views/layouts"
+NAV_FILE="${NAV_DIR}/navigation.blade.php"
+
+# ディレクトリとファイルがなければスキップ or 作成
+if [ ! -f "${NAV_FILE}" ]; then
+  log_info "navigation.blade.php が見つかりません：${NAV_FILE}。スキップします"
 else
-  log_info "navigation.blade.php にすでにログアウトボタンがあります"
+  # </nav> の直前にフォームを挿入
+  sed -i '' '/<\/nav>/i \
+  <form method="POST" action="{{ route('\''logout'\'') }}" class="inline">\
+    @csrf\
+    <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">ログアウト</button>\
+  </form>' "${NAV_FILE}"
+  log_info "navigation.blade.php にログアウトボタンを追加しました"
 fi
 
 log_info "Laravel 側の OAuth 設定が完了"
