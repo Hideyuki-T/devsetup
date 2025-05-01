@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-# modules/oauth/init.sh
 # modules/oauth/init.sh：OAuthモジュール初期化フェーズ
 ```bash
 

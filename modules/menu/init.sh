@@ -43,11 +43,7 @@ esac
 
 # 有効化される構成をログに表示
 function show_actives() {
-  local a=()
-  for m in "${!ENABLED[@]}"; do
-    [[ "${ENABLED[$m]}" == true ]] && a+=("$m")
-  done
-  log_info "modules/menu/init.sh：有効化される構成: ${a[*]}"
+  log_info "modules/menu/init.sh：有効化される構成: ${ENABLED_MODULES[*]}"
 }
 show_actives
 
