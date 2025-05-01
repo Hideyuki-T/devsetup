@@ -41,12 +41,6 @@ case "${SELECTED}" in
   *) log_error "無効な選択です"; exit 1 ;;
 esac
 
-# 有効化される構成をログに表示
-function show_actives() {
-  log_info "modules/menu/init.sh：有効化される構成: ${ENABLED_MODULES[*]}"
-}
-show_actives
-
 # 6) 配列に追加
 for mod in "${!ENABLED[@]}"; do
   if [[ "${ENABLED[$mod]}" == true ]] && [[ ! " ${ENABLED_MODULES[*]} " =~ " ${mod} " ]]; then
@@ -64,3 +58,9 @@ for name in "${priority_order[@]}"; do
 done
 ENABLED_MODULES=("${ordered_modules[@]}")
 export ENABLED_MODULES
+
+# 有効化される構成をログに表示
+function show_actives() {
+  log_info "modules/menu/init.sh：有効化される構成: ${ENABLED_MODULES[*]}"
+}
+show_actives
