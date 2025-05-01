@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # modules/docker/configure.sh：Docker 設定フェーズ
 
 # 1) ログ出力＋ポート番号読み取り

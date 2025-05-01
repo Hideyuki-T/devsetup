@@ -28,10 +28,9 @@ run_phase init
 
 # メニューで立てられた ENABLED[...] を反映して、モジュールリストを再構築
 # 実行順序を Laravel → Docker → Breeze → OAuth に設定
-MODULES=(laravel docker breeze oauth)
-INIT_MODULES=(menu)
-for mod in "${MODULES[@]}"; do
-  [[ "${ENABLED[$mod]:-false}" == "true" ]] && INIT_MODULES+=("$mod")
+INIT_MODULES=()
+for mod in "${ENABLED_MODULES[@]}"; do
+  [[ "$mod" != "menu" ]] && INIT_MODULES+=("$mod")
 done
 
 # 各モジュールの init フェーズ（menu は不要）
