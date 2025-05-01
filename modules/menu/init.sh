@@ -5,9 +5,8 @@ ENABLED_MODULES=()
 declare -A ENABLED
 export ENABLED_MODULES
 
-
 # 1) 対話式でプロジェクト名を取得
-read -rp "プロジェクト名はどうします？: " PROJECT_NAME
+read -rp "プロジェクト名はどうしますか？: " PROJECT_NAME
 
 # 2) Projects ディレクトリ直下に一度だけ作成
 BASE_DIR="${DEVSETUP_ROOT}/.."
@@ -16,7 +15,7 @@ mkdir -p "${PROJECT_DIR}"
 export PROJECT_DIR
 
 # 3) ログ出力
-log_info "modules/menu/init.sh：プロジェクトディレクトリを作成しました：${PROJECT_DIR}"
+log_info "modules/menu/init.sh：プロジェクトディレクトリを作成しましたよ！：${PROJECT_DIR}"
 
 # 4) 構成メニュー表示
 cat << 'EOF'
@@ -24,6 +23,7 @@ cat << 'EOF'
  [1] PHP + nginx + MySQL
  [2] PHP + nginx + MySQL + Laravel
  [3] PHP + nginx + MySQL + Laravel + Breeze
+ [4] PHP + nginx + MySQL + Laravel + Breeze + OAuth
 EOF
 read -rp "番号を選択してね。: " SELECTED
 
@@ -32,6 +32,7 @@ case "$SELECTED" in
   1) ENABLED[docker]=true ;;
   2) ENABLED[docker]=true; ENABLED[laravel]=true ;;
   3) ENABLED[docker]=true; ENABLED[laravel]=true; ENABLED[breeze]=true ;;
+  4) ENABLED[docker]=true; ENABLED[laravel]=true; ENABLED[breeze]=true ; ENABLED[oauth]=true ;;
   *) log_error "無効な選択です"; exit 1 ;;
 esac
 
@@ -49,3 +50,10 @@ for mod in "${!ENABLED[@]}"; do
     ENABLED_MODULES+=("$mod")
   fi
 done
+
+# OAuth を常に最後に配置
+if [[ " ${ENABLED_MODULES[*]} " =~ " oauth " ]]; then
+  ENABLED_MODULES=( "${ENABLED_MODULES[@]/oauth}" )
+  ENABLED_MODULES+=( "oauth" )
+fi
+
