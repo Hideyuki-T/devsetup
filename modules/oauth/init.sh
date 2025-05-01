@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
+
 # modules/oauth/init.sh：OAuth モジュール初期化フェーズ
 
 log_info "OAuth連携の設定を開始します"
