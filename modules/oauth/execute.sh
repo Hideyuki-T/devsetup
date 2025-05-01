@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -e
 # modules/oauth/execute.sh：OAuthモジュール実行フェーズ
-```bash
+source "${DEVSETUP_ROOT}/framework/logger.sh"
 
-dialog_info "OAuthモジュールの実行を開始します"
+log_info "OAuthモジュールの実行を開始します"
 
 docker-compose exec php bash -lc 'composer require laravel/socialite'
 
-dialog_success "Socialite インストールが完了しました"
-```
+log_info "Socialite インストールが完了しました"
+

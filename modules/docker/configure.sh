@@ -1,5 +1,3 @@
-### modules/docker/configure.sh
-```bash
 #!/usr/bin/env bash
 set -euo pipefail
 # modules/docker/configure.sh：Docker 設定フェーズ
@@ -46,4 +44,3 @@ set -a; source .env; set +a
 envsubst < "${DEVSETUP_ROOT}/templates/php-nginx-mysql/docker-compose.yml.template" \
          > docker-compose.yml
 log_info "modules/docker/configure.sh：docker-compose.yml を作成しました：${PROJECT_DIR}/docker-compose.yml"
-```

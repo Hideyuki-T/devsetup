@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
+
+source "${DEVSETUP_ROOT}/framework/logger.sh"
 
 check_port_availability() {
  local port="$1"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 compose_generator() {
   local template_file="$1"
