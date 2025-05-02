@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 
 # modules/menu/init.sh：プロジェクト作成フェーズ
@@ -42,22 +43,18 @@ case "${SELECTED}" in
 esac
 
 # 6) 配列に追加
-for mod in "${!ENABLED[@]}"; do
-  if [[ "${ENABLED[$mod]}" == true ]] && [[ ! " ${ENABLED_MODULES[*]} " =~ " ${mod} " ]]; then
-    ENABLED_MODULES+=("$mod")
-  fi
+for mod in docker laravel breeze oauth; do
+  [[ "${ENABLED[$mod]:-false}" == true ]] && ENABLED_MODULES+=("$mod")
 done
+
 
 # 7) 優先順位に基づく並び替え
 declare -a priority_order=(laravel docker breeze oauth)
-declare -a ordered_modules=()
-for name in "${priority_order[@]}"; do
-  for m in "${ENABLED_MODULES[@]}"; do
-    [[ "$m" == "$name" ]] && ordered_modules+=("$m")
+mapfile -t ENABLED_MODULES < <(
+  for name in "${priority_order[@]}"; do
+    [[ " ${ENABLED_MODULES[*]} " == *" ${name} "* ]] && printf "%s\n" "$name"
   done
-done
-ENABLED_MODULES=("${ordered_modules[@]}")
-export ENABLED_MODULES
+)
 
 # 有効化される構成をログに表示
 function show_actives() {

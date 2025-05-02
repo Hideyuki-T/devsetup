@@ -1,12 +1,18 @@
 <table>
 <tr>
-<th>ID</th><th>優先TODO</th>
+<th>モジュール</th><th>menu</th><th>laravel</th><th>docker</th><th>breeze</th><th>oauth</th>
 </tr>
 <tr>
-<th>1</th><th>nginx +php + MySQL + laravel + BREEZE + OAuth までの初期設定を自動化</th>
+<th>init.sh</th><th></th><th></th><th></th><th></th>
 </tr>
 <tr>
-<th>2</th><th></th>
+<th>configure.sh</th><th></th><th></th><th></th><th></th>
+</tr>
+<tr>
+<th>execute.sh</th><th></th><th></th><th></th><th></th>
+</tr>
+<tr>
+<th>cleanup.sh</th><th></th><th></th><th></th><th></th>
 </tr>
 </table>
 

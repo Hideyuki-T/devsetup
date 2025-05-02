@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -e
+
+set -euo pipefail
 # modules/laravel/init.sh：ホスト側で Laravel プロジェクトを src/ に生成
 
 log_info "modules/laravel/init.sh：ホストの src/ に Laravel を生成中…"
