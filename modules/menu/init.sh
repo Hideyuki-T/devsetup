@@ -25,10 +25,10 @@ log_info "modules/menu/init.sh：プロジェクトディレクトリを作成�
 # 4) 構成メニュー表示
 cat << 'EOF'
 メニュー：
- [1] PHP + nginx + MySQL
- [2] PHP + nginx + MySQL + Laravel
- [3] PHP + nginx + MySQL + Laravel + Breeze
- [4] PHP + nginx + MySQL + Laravel + Breeze + OAuth
+ [1] docker(PHP + nginx + MySQL)
+ [2] docker(PHP + nginx + MySQL) + Laravel
+ [3] docker(PHP + nginx + MySQL) + Laravel + Breeze
+ [4] docker(PHP + nginx + MySQL) + Laravel + Breeze + OAuth
 EOF
 read -rp "番号を選択してね。: " SELECTED
 
