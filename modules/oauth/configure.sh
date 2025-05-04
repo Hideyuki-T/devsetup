@@ -58,21 +58,31 @@ use App\Models\User;
 
 class OAuthController extends Controller
 {
+    /**
+     * Google OAuth へリダイレクト
+     */
     public function redirect()
     {
         return Socialite::driver('google')->redirect();
     }
 
+    /**
+     * Google からのコールバック受け取り
+     */
     public function callback()
     {
-        \$googleUser = Socialite::driver('google')->stateless()->user();
+        $googleUser = Socialite::driver('google')->stateless()->user();
 
-        \$user = User::firstOrCreate(
-            ['email' => \$googleUser->getEmail()],
-            ['name'  => \$googleUser->getName()]
+        // メールアドレスで既存ユーザーを取得、なければ新規作成
+        $user = User::firstOrCreate(
+            ['email' => $googleUser->getEmail()],
+            ['name'  => $googleUser->getName()]
         );
 
-        Auth::login(\$user);
+        // ログイン
+        Auth::login($user);
+
+        // 認証後は welcome ページへ
         return redirect()->intended('/welcome');
     }
 }
@@ -84,40 +94,19 @@ TARGET="${PROJECT_DIR}/src/routes/web.php"
 
 # 存在チェック
 if [ ! -f "$TARGET" ]; then
-  log_info "routes/web.php が見つかりません：$TARGET。スキップ"
+  log_info "routes/web.php が見つかりません：$TARGET。スキップしますわ"
 else
-  log_info "src/routes/web.php に OAuth 用の use 文とルートを追記中…"
+  log_info "src/routes/web.php に OAuth ルートを追記中…"
+  cat << 'EOF' >> "$TARGET"
 
-  # 1) use 文の挿入
-  sed -i '' -e "/use Illuminate\\\\Support\\\\Facades\\\\Route;/a\\
-use App\\\\Http\\\\Controllers\\\\OAuthController;
-" "$TARGET"
+use App\Http\Controllers\OAuthController;
 
-  # 2) OAuth ルートブロックを挿入
-  sed -i '' -e "/require __DIR__'.\\/auth\\.php';/a\\
-\\
-/* ──────────────────────────\\
-| OAuth Routes                  |\\
-|──────────────────────────────|\\
-| Guest ミドルウェアを付与して、認証済みユーザーはアクセスさせないように。|\\
-| route 名も指定しておく。          |\\
-*/\\
-Route::middleware('guest')->group(function () {\\
-    // Google OAuth へリダイレクト\\
-    Route::get('/login/google', [\\App\\\\Http\\\\Controllers\\\\OAuthController::class, 'redirect'])\\
-         ->name('login.google');\\
-
-    // Google からのコールバック受け取り\\
-    Route::get('/login/google/callback', [\\App\\\\Http\\\\Controllers\\\\OAuthController::class, 'callback'])\\
-         ->name('login.google.callback');\\
-});
-" "$TARGET"
-
-  log_info "src/routes/web.php への追記が完了"
+// Google OAuth
+Route::get('/login/google', [OAuthController::class, 'redirect']);
+Route::get('/login/google/callback', [OAuthController::class, 'callback']);
+EOF
+  log_info "src/routes/web.php への追記が完了しました"
 fi
-
-
-
 
 # 6) ログインビュー生成
 mkdir -p "${PROJECT_DIR}/resources/views/auth"
