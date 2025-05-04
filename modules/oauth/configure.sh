@@ -35,14 +35,31 @@ log_info "Composer 依存の追加（laravel/socialite）を開始します"
 )
 log_info "Composer 依存の追加が完了しました"
 
-# 3) services.php の配列末尾 ('];') の直前に google 設定を挿入
-sed -i '' '/^];/i \
-    '\''google'\'' => [\
-        '\''client_id'\''     => env('\''GOOGLE_CLIENT_ID'\''),\
-        '\''client_secret'\'' => env('\''GOOGLE_CLIENT_SECRET'\''),\
-        '\''redirect'\''      => env('\''GOOGLE_REDIRECT_URI'\''),\
-    ],' "${PROJECT_DIR}/src/config/services.php"
-log_info "config/services.php に Google 設定を正しく挿入しました"
+# 3) services.php への Google 設定挿入（
+TARGET="${PROJECT_DIR}/src/config/services.php"
+
+if [ ! -f "$TARGET" ]; then
+  log_error "config/services.php が見つかりません：$TARGET。スキップ"
+else
+  log_info "config/services.php に Google 設定を ed で挿入中…"
+
+  ed -s "$TARGET" << 'EDCMDS'
+/return \[/
+/^];/
+i
+    'google' => [
+        'client_id'     => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect'      => env('GOOGLE_REDIRECT_URI'),
+    ],
+.
+w
+q
+EDCMDS
+
+  log_info "config/services.php への Google 設定挿入が完了"
+fi
+
 
 
 # 4) OAuthController を生成
