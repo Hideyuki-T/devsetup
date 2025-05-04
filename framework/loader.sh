@@ -23,7 +23,7 @@ source "${CONFIG_DIR}/default.conf"
 declare -A ENABLED
 declare -a ENABLED_MODULES=(menu)
 
-# INIT フェーズ実行 → modules/menu/init.sh が走り、PROJECT_DIR などを設定
+# INIT フェーズ実行
 run_phase init
 
 # メニューで立てられた ENABLED[...] を反映して、モジュールリストを再構築
@@ -33,16 +33,15 @@ for mod in "${ENABLED_MODULES[@]}"; do
   [[ "$mod" != "menu" ]] && INIT_MODULES+=("$mod")
 done
 
-# 各モジュールの init フェーズ（menu は不要）
-log_info "=== MODULE INIT フェーズ開始 ==="
-for mod in "${INIT_MODULES[@]}"; do
-  [[ "$mod" == "menu" ]] && continue
-  log_info "→ ${mod}：init 実行"
-  source "${DEVSETUP_ROOT}/modules/${mod}/init.sh"
-done
-log_info "=== MODULE INIT フェーズ終了 ==="
 
-# configure → execute → cleanup フェーズを一度ずつ実行
-for phase in configure execute cleanup; do
-  run_phase "$phase"
-done
+# 各モジュールのフルライフサイクル実行
+ log_info "=== MODULE フルライフサイクル実行 開始 ==="
+ for mod in "${INIT_MODULES[@]}"; do
+   log_info "=== ${mod} モジュール開始 ==="
+   for phase in init configure execute cleanup; do
+     log_info "→ ${mod}：${phase} フェーズ実行"
+     source "${DEVSETUP_ROOT}/modules/${mod}/${phase}.sh"
+   done
+   log_info "=== ${mod} モジュール終了 ==="
+ done
+ log_info "=== 全 MODULE ライフサイクル実行 終了 ==="
