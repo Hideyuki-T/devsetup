@@ -84,50 +84,38 @@ TARGET="${PROJECT_DIR}/src/routes/web.php"
 
 # 存在チェック
 if [ ! -f "$TARGET" ]; then
-  log_info "routes/web.php が見つかりません：$TARGET。スキップします。"
+  log_info "routes/web.php が見つかりません：$TARGET。スキップ"
 else
   log_info "src/routes/web.php に OAuth 用の use 文とルートを追記中…"
 
   # 1) use 文の挿入
-  # 「use Illuminate\Support\Facades\Route;」 の直後へ追加
-  sed -i '' -e "/use Illuminate\\\\\\\\Support\\\\\\\\Facades\\\\\\\\Route;/a\\
+  sed -i '' -e "/use Illuminate\\\\Support\\\\Facades\\\\Route;/a\\
 use App\\\\Http\\\\Controllers\\\\OAuthController;
 " "$TARGET"
 
   # 2) OAuth ルートブロックを挿入
-  # 「require __DIR__.'/auth.php';」 の直後へ追加
-  read -r -d '' OAUTH_ROUTES << 'EOS'
-
-/*
-|--------------------------------------------------------------------------
-| OAuth Routes
-|--------------------------------------------------------------------------
-|
-| Guest ミドルウェアを付与して、認証済みユーザーはアクセスさせないように。
-| さらに route 名を付けてリンク生成やリダイレクト先で使いやすくする。
-|
-*/
-Route::middleware('guest')->group(function () {
-    // Google OAuth へリダイレクト
-    Route::get('/login/google', [\App\Http\Controllers\OAuthController::class, 'redirect'])
-         ->name('login.google');
-
-    // Google からのコールバック受け取り
-    Route::get('/login/google/callback', [\App\Http\Controllers\OAuthController::class, 'callback'])
-         ->name('login.google.callback');
-});
-EOS
-
   sed -i '' -e "/require __DIR__'.\\/auth\\.php';/a\\
-$OAUTH_ROUTES
+\\
+/* ──────────────────────────\\
+| OAuth Routes                  |\\
+|──────────────────────────────|\\
+| Guest ミドルウェアを付与して、認証済みユーザーはアクセスさせないように。|\\
+| route 名も指定しておく。          |\\
+*/\\
+Route::middleware('guest')->group(function () {\\
+    // Google OAuth へリダイレクト\\
+    Route::get('/login/google', [\\App\\\\Http\\\\Controllers\\\\OAuthController::class, 'redirect'])\\
+         ->name('login.google');\\
+
+    // Google からのコールバック受け取り\\
+    Route::get('/login/google/callback', [\\App\\\\Http\\\\Controllers\\\\OAuthController::class, 'callback'])\\
+         ->name('login.google.callback');\\
+});
 " "$TARGET"
 
   log_info "src/routes/web.php への追記が完了"
 fi
 
-
-  log_info "src/routes/web.php への OAuth ルート追記が完了"
-fi
 
 
 
