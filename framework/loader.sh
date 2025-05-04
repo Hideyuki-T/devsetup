@@ -19,10 +19,10 @@ CONFIG_DIR="${DEVSETUP_ROOT}/config"
 source "${CONFIG_DIR}/default.conf"
 [[ -f "${CONFIG_DIR}/user.conf" ]] && source "${CONFIG_DIR}/user.conf"
 
-# loader.sh では 一切 ENABLED_MODULES を初期化しないこととする。
-# 有効モジュール用配列を初期化（menu フェーズのみ）
-# declare -A ENABLED
-# declare -a ENABLED_MODULES=(menu)
+ # 初期フェーズとして必ず menu モジュールを実行させる
+declare -A ENABLED            # メニュー選択用フラグ
+declare -a ENABLED_MODULES=(menu)  # 最初は menu モジュールのみ
+export ENABLED_MODULES
 
 # INIT フェーズ実行
 run_phase init
