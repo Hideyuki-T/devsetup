@@ -5,9 +5,9 @@ source "${DEVSETUP_ROOT}/framework/logger.sh"
 
 log_info "OAuth設定ファイルの構成を行います"
 
-# 0) .env の存在チェック
-if [ ! -f "${PROJECT_DIR}/.env" ]; then
-  log_info ".env が見つかりません…。先に Docker Configure を実行してください"
+ # 0) src/.env の存在チェック
+if [ ! -f "${PROJECT_DIR}/src/.env" ]; then
+  log_info "src/.env が見つかりません…。先に Laravel 環境を初期化してください"
   exit 1
 fi
 
@@ -16,15 +16,15 @@ log_info "OAuth 用環境変数を .env に設定します"
 source "${DEVSETUP_ROOT}/functions/env_generator.sh"
 
 read -rp "Google Client ID を入力してください: " CLIENT_ID
-add_env_var "GOOGLE_CLIENT_ID"     "${CLIENT_ID}"
+add_env_var "GOOGLE_CLIENT_ID"     "${CLIENT_ID}" "${PROJECT_DIR}/src/.env"
 
 read -rp "Google Client Secret を入力してください: " CLIENT_SECRET
-add_env_var "GOOGLE_CLIENT_SECRET" "${CLIENT_SECRET}"
+add_env_var "GOOGLE_CLIENT_SECRET" "${CLIENT_SECRET}" "${PROJECT_DIR}/src/.env"
 
 read -rp "Google Redirect URI を入力してください (例 http://localhost:8080/login/google/callback): " REDIRECT_URI
-add_env_var "GOOGLE_REDIRECT_URI"  "${REDIRECT_URI}"
+add_env_var "GOOGLE_REDIRECT_URI"  "${REDIRECT_URI}" "${PROJECT_DIR}/src/.env"
 
-log_info ".env への OAuth 環境変数設定が完了しました"
+log_info "src/.env への OAuth 環境変数設定が完了しました"
 
 # 2) Composer 依存追加（Laravel Socialite をインストール）
 log_info "Composer 依存の追加（laravel/socialite）を開始します"
