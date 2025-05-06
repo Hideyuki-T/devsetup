@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
-# modules/laravel/configure.sh：ホスト側の .env を src/ で調整
+set -euo pipefail
+source "${DEVSETUP_ROOT}/framework/logger.sh"
 
-log_info "modules/laravel/configure.sh：.env を調整中…"
+log_info "modules/laravel/configure.sh：Laravel 設定フェーズ（.env は docker モジュール側で管理）"
 
-# .env.example → .env
-cp "${PROJECT_DIR}/src/.env.example" "${PROJECT_DIR}/src/.env"
-
-# DB 名を sed で書き換え
-sed -i '' "s/^DB_DATABASE=.*/DB_DATABASE=${PROJECT_NAME}/" \
-        "${PROJECT_DIR}/src/.env"
-
-log_info "modules/laravel/configure.sh：src/.env の DB_DATABASE を更新しました！"
+log_info "modules/laravel/configure.sh：完了（.env はスキップ）"

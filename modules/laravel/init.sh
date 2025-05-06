@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
-# modules/laravel/init.sh：ホスト側で Laravel プロジェクトを src/ に生成
+set -euo pipefail
+source "${DEVSETUP_ROOT}/framework/logger.sh"
 
-log_info "modules/laravel/init.sh：ホストの src/ に Laravel を生成中…"
+log_info "modules/laravel/init.sh：コンテナ内で Laravel をインストールします"
 
-# PROJECT_DIR/src に Laravel ルートをインストール
-composer create-project laravel/laravel "${PROJECT_DIR}/src" --quiet
+cd "${PROJECT_DIR}"
 
-log_info "modules/laravel/init.sh：生成完了 → ${PROJECT_DIR}/src"
+# composer create-project を --force オプションで上書
+docker compose exec -T app bash -lc "\
+  composer create-project laravel/laravel /var/www/html --quiet --remove-vcs --ansi \
+"
+
+log_info "modules/laravel/init.sh：Laravel インストール完了"

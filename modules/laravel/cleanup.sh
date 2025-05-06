@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-log_info "→ ${BASH_SOURCE[0]} を実行中（クリーンアップ処理）"
-log_debug "※ 現時点では特に後処理はありません。"
-log_info "クリーンアップフェーズ完了"
+set -euo pipefail
+source "${DEVSETUP_ROOT}/framework/logger.sh"
+log_info "modules/laravel/cleanup.sh：特に後処理はありません"

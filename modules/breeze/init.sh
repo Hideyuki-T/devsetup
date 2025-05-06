@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# modules/breeze/init.sh：ファイル準備のみ（実行しない）
 
 set -euo pipefail
+# modules/breeze/init.sh：ファイル準備のみ（実行しない）
 
-log_debug "modules/breeze/init.sh：Init フェーズ、特に処理なし"
+log_info "modules/breeze/init.sh：Init フェーズ、特に処理なし"

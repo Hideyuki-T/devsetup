@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# modules/docker/init.sh：Docker 初期化フェーズ
 
 set -euo pipefail
+# modules/docker/init.sh：Docker 初期化フェーズ
 
 log_info "modules/docker/init.sh：テンプレートをコピー中…"
 

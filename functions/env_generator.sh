@@ -1,15 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
+# functions/env_generator.sh：.env 追記・更新用ユーティリティ
+source "${DEVSETUP_ROOT}/framework/logger.sh"
 
-env_generator() {
-  local template_file="$1"
-  local output_file="$2"
+add_env_var(){
+  local key="$1" val="$2"
+  # 第三引数が指定されればそれを.envファイルとして使用
+  # なければデフォルトでPROJECT_DIR/.env
+  local file="${3:-${PROJECT_DIR}/.env}"
 
-  if [ ! -f "$template_file" ]; then
-    log_error "テンプレートファイルが見つかりません。。: ${template_file}"
-    exit 1
+  if [ ! -f "$file" ]; then
+    log_info "env_generator: .env が見つかりません：${file}"
+    return 1
   fi
 
-  # envsubst:gettextパッケージに含まれるコマンド
-  envsubst < "${template_file}" > "${output_file}"
-  log_info ".env ファイル出来たよ。: ${output_file}"
+  if grep -q "^${key}=" "$file"; then
+    # すでにキーが存在すれば置き換え
+    sed -i '' -e "s/^${key}=.*$/${key}=${val}/" "$file"
+  else
+    # なければ末尾に追記
+    echo "${key}=${val}" >> "$file"
+  fi
 }

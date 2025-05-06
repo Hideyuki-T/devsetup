@@ -8,7 +8,18 @@ function run_phase() {
   local phase="$1"
   log_info "=== ${phase^^} フェーズ開始 ==="
 
-  for module in "${ENABLED_MODULES[@]}"; do
+  # フェーズごとのモジュール順序を決める
+  local mods=()
+  if [[ "$phase" == "execute" ]]; then
+    # Docker を先頭、残り順は menu/init.sh で整列済みのまま
+    mods=( docker "${ENABLED_MODULES[@]/docker}" )
+  else
+    # init／configure／cleanup はそのまま
+    mods=( "${ENABLED_MODULES[@]}" )
+  fi
+
+  # 各モジュールのスクリプト実行
+  for module in "${mods[@]}"; do
     local script="$DEVSETUP_ROOT/modules/${module}/${phase}.sh"
     if [[ -f "$script" && -x "$script" ]]; then
       log_info "→ ${module}：${phase} 実行"
@@ -20,3 +31,4 @@ function run_phase() {
 
   log_info "=== ${phase^^} フェーズ終了 ==="
 }
+
