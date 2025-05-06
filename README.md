@@ -16,6 +16,28 @@
 </tr>
 </table>
 
+
+<details>
+<summary>便利検索コマンド</summary>
+<table>
+<tr>
+<th colspan="2">grep -R "検索したいワード" -n modules</th>
+</tr>
+<tr>
+<th>grep</th><th>指定した文字列をファイルの中から検索するコマンド</th>
+<tr>
+<tr>
+<th>-R</th><th>再帰的にディレクトリ配下のすべてのファイルを対象に検索</th>
+</tr>
+<tr>
+<th>-n</th><th>マッチした行の行番号も表示するオプション</th>
+</tr>
+<tr>
+<th>modules</th><th>検索対象のディレクトリ（modules/配下を探す)</th>
+</tr>
+</table>
+</details>
+
 # 注意事項
 
 - **開発環境向け:**  
