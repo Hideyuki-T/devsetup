@@ -8,8 +8,8 @@ source "${DEVSETUP_ROOT}/functions/env_generator.sh"
 log_info "modules/oauth/configure.sh：OAuth 設定ファイルの構成を行います"
 
 # ─────────────────────────────
-# 0) ルート直下の .env の存在チェック
-ENV_FILE="${PROJECT_DIR}/.env"
+# 0) Laravel が読む src/.env の存在チェック
+ENV_FILE="${PROJECT_DIR}/src/.env"
 if [ ! -f "${ENV_FILE}" ]; then
   log_error ".env が見つかりません：${ENV_FILE}。先に Docker モジュールで .env を生成してください"
   exit 1
@@ -164,15 +164,45 @@ EOF
 # ─────────────────────────────
 
 # ─────────────────────────────
-# 7) ナビゲーションに「ログアウト」ボタン追加
+# 7) layouts/navigation.blade.php を「ゲスト ⇔ 認証済み」で置き換え
 NAV_FILE="${PROJECT_DIR}/src/resources/views/layouts/navigation.blade.php"
 if [ -f "${NAV_FILE}" ]; then
-  log_info "modules/oauth/configure.sh：navigation.blade.php にログアウトボタンを追加"
-  sed -i '' '/<\/nav>/i \
-  <form method="POST" action="{{ route('\''logout'\'') }}" class="inline">\
-    @csrf\
-    <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">ログアウト</button>\
-  </form>' "${NAV_FILE}"
+  log_info "modules/oauth/configure.sh：navigation.blade.php をゲスト／認証済み分岐型に置き換え"
+  cat << 'EOF' > "${NAV_FILE}"
+<nav>
+    {{-- 共通メニューがあればここに --}}
+    @guest
+    <div class="sm:flex sm:items-center sm:ms-6">
+        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">ログイン</a>
+        <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">登録</a>
+    </div>
+    @else
+    <div class="hidden sm:flex sm:items-center sm:ms-6">
+        <x-dropdown align="right" width="48">
+            <x-slot name="trigger">
+                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                    <div>{{ Auth::user()->name }}</div>
+                    <div class="ms-1">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </button>
+            </x-slot>
+            <x-slot name="content">
+                <x-dropdown-link :href="route('profile.edit')">プロフィール編集</x-dropdown-link>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
+                        ログアウト
+                    </x-dropdown-link>
+                </form>
+            </x-slot>
+        </x-dropdown>
+    </div>
+    @endguest
+</nav>
+EOF
 else
   log_warn "navigation.blade.php が見つかりません：${NAV_FILE}。スキップします"
 fi
