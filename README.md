@@ -75,6 +75,11 @@
 </table>
 </details>
 
+<details>
+<summary>不要なファイルかどうか確認する方法</summary>
+【テンプレートとコピー先の差分を取る】
+
+</details>
 
 <details>
 <summary>便利検索コマンド</summary>
