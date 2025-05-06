@@ -36,6 +36,45 @@
 </tr>
 </table>
 
+<details>
+<summary>各modulesスクリプトの処理概要一覧</summary>
+<table>
+<tr>
+<th>ファイル名</th><th>処理の要約</th>
+</tr>
+<tr>
+<th>modules/menu/init.sh</th><th>プロジェクト名を取得し、構成（docker/laravel/breeze/oauth）を選択・有効化</th>
+</tr>
+<tr>
+<th>modules/docker/init.sh</th><th>docker/ディレクトリにテンプレートファイルをコピー</th>
+</tr>
+<tr>
+<th>modules/docker/configure.sh</th><th>ポート番号を聞いて .env と docker-compose.yml を生成</th>
+</tr>
+<tr>
+<th>modules/docker/execute.sh</th><th>Docker コンテナをリセット＆再起動</th>
+</tr>
+<tr>
+<th>modules/laravel/init.sh</th><th>Laravel を Docker コンテナ内に create-project でインストール</th>
+</tr>
+<tr>
+<th>modules/laravel/configure.sh</th><th>Laravel 側 .env は docker側で管理するのでスキップ（何もしない）</th>
+</tr>
+<tr>
+<th>modules/laravel/execute.sh</th><th>artisan key:generate と migrate:fresh --seed を実行</th>
+</tr>
+<tr>
+<th>modules/breeze/execute.sh</th><th>Breeze の導入、npm ビルド、マイグレーションを一括実行</th>
+</tr>
+<tr>
+<th>modules/oauth/configure.sh</th><th>OAuth（Google）の設定ファイル・ルート・コントローラなどを一括生成</th>
+</tr>
+<tr>
+<th>modules/oauth/execute.sh</th><th>Socialite のインストール、appコンテナの再起動、キャッシュクリア実施</th>
+</tr>
+</table>
+</details>
+
 
 <details>
 <summary>便利検索コマンド</summary>
