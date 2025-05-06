@@ -75,38 +75,35 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use App\Models\User;
 
 class OAuthController extends Controller
 {
-    /**
-     * Google OAuth へリダイレクト
-     */
     public function redirect()
     {
         return Socialite::driver('google')->redirect();
     }
 
-    /**
-     * Google からのコールバック受け取り
-     */
     public function callback()
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
 
-        // メールアドレスで既存ユーザーを取得、なければ新規作成
         $user = User::firstOrCreate(
             ['email' => $googleUser->getEmail()],
-            ['name'  => $googleUser->getName()]
+            [
+                'name'     => $googleUser->getName(),
+                // ランダムなパスワードを自動生成（ハッシュ化して保存）
+                'password' => bcrypt(Str::random(32)),
+            ]
         );
 
-        // ログイン
         Auth::login($user);
 
-        // 認証後は welcome ページへ
         return redirect()->intended('/welcome');
     }
 }
+
 EOF
 log_info "OAuthController を作成しました"
 
