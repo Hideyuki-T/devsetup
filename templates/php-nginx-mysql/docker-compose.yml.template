@@ -6,7 +6,6 @@ services:
       dockerfile: ${PHP_DOCKERFILE}
     volumes:
       - ./src:/var/www/html
-      - ./src/.env:/var/www/html/.env:ro
     environment:
       DB_CONNECTION: mysql
       DB_HOST: ${DB_HOST}
