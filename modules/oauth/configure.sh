@@ -111,7 +111,7 @@ TARGET="${PROJECT_DIR}/src/routes/web.php"
 
 # 存在チェック
 if [ ! -f "$TARGET" ]; then
-  log_info "routes/web.php が見つかりません：$TARGET。スキップしますわ"
+  log_info "src/routes/web.php が見つかりません：$TARGET。スキップしますわ"
 else
   log_info "src/routes/web.php に OAuth ルートを追記中…"
   cat << 'EOF' >> "$TARGET"
@@ -126,8 +126,8 @@ EOF
 fi
 
 # 6) ログインビュー生成
-mkdir -p "${PROJECT_DIR}/resources/views/auth"
-cat << 'EOF' > "${PROJECT_DIR}/resources/views/auth/login.blade.php"
+mkdir -p "${PROJECT_DIR}/src/resources/views/auth"
+cat << 'EOF' > "${PROJECT_DIR}/src/resources/views/auth/login.blade.php"
 @extends('layouts.app')
 
 @section('content')
@@ -150,7 +150,7 @@ EOF
 log_info "auth/login.blade.php を生成しました"
 
 # 7) ナビゲーションにログアウトボタン追加
-NAV_DIR="${PROJECT_DIR}/resources/views/layouts"
+NAV_DIR="${PROJECT_DIR}/src/resources/views/layouts"
 NAV_FILE="${NAV_DIR}/navigation.blade.php"
 
 # ディレクトリとファイルがなければスキップ or 作成
@@ -167,3 +167,13 @@ else
 fi
 
 log_info "Laravel 側の OAuth 設定が完了"
+
+# キャッシュクリア処理
+log_info "Artisan キャッシュクリアを実行します。"
+
+# PHP-FPM コンテナ内でコマンドを実行
+docker-compose exec -T app php artisan view:clear
+docker-compose exec -T app php artisan config:clear
+
+log_info "キャッシュクリア完了！"
+
