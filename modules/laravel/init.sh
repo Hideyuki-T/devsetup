@@ -1,21 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# modules/laravel/init.sh：ホスト側で Laravel プロジェクトを src/ に生成
+# modules/laravel/init.sh：コンテナ内で Laravel プロジェクトを src/ に生成するフェーズ
 
 source "${DEVSETUP_ROOT}/framework/logger.sh"
+log_info "modules/laravel/init.sh：Docker コンテナ内で Laravel を生成中…"
 
-log_info "modules/laravel/init.sh：ホストの src/ に Laravel を生成中…"
+# プロジェクトルートへ移動
+cd "${PROJECT_DIR}"
 
-# 古い src ディレクトリを丸ごと削除
-if [ -d "${PROJECT_DIR}/src" ]; then
-  log_info "modules/laravel/init.sh：既存の src/ ディレクトリを丸ごと削除します"
-  rm -rf "${PROJECT_DIR}/src"
-fi
+# 既存の src/ はコンテナ⇆ホスト両方でクリア
+docker compose exec -T app bash -lc "\
+  chmod -R u+rw /var/www/html/src || true && \
+  rm -rf /var/www/html/src \
+"
 
-# クリーンな src ディレクトリを作成
-mkdir -p "${PROJECT_DIR}/src"
+# 空の src/ をコンテナ内で再作成
+docker compose exec -T app mkdir -p /var/www/html/src
 
-# Composer create-project を実行（既存 VCS 情報も除去）
-composer create-project laravel/laravel "${PROJECT_DIR}/src" --quiet --remove-vcs
+# コンテナ内で composer create-project を実行
+docker compose exec -T app bash -lc "\
+  composer create-project laravel/laravel /var/www/html/src --quiet --remove-vcs \
+"
 
-log_info "modules/laravel/init.sh：生成完了 → ${PROJECT_DIR}/src"
+log_info "modules/laravel/init.sh：生成完了 → src/ inside コンテナ"

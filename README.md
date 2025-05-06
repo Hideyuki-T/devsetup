@@ -21,7 +21,7 @@
 <summary>便利検索コマンド</summary>
 <table>
 <tr>
-<th colspan="2">grep -R "検索したいワード" -n modules</th>
+<th colspan="2">grep -R "検索したいワード" -n "検索したいディレクトリ"</th>
 </tr>
 <tr>
 <th>grep</th><th>指定した文字列をファイルの中から検索するコマンド</th>
@@ -33,7 +33,7 @@
 <th>-n</th><th>マッチした行の行番号も表示するオプション</th>
 </tr>
 <tr>
-<th>modules</th><th>検索対象のディレクトリ（modules/配下を探す)</th>
+<th>modules</th><th>検索対象のディレクトリ（書かなくてもOK)</th>
 </tr>
 </table>
 </details>

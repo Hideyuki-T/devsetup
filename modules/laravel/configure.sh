@@ -1,14 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# modules/laravel/configure.sh：ホスト側の .env を src/ で調整
+source "${DEVSETUP_ROOT}/framework/logger.sh"
 
-log_info "modules/laravel/configure.sh：.env を調整中…"
+log_info "modules/laravel/configure.sh：コンテナ内で .env 設定フェーズ開始"
 
-# .env.example → .env
-cp "${PROJECT_DIR}/src/.env.example" "${PROJECT_DIR}/src/.env"
+cd "${PROJECT_DIR}"
 
-# DB 名を sed で書き換え
-sed -i '' "s/^DB_DATABASE=.*/DB_DATABASE=${PROJECT_NAME}/" \
-        "${PROJECT_DIR}/src/.env"
+# .env.example → src/.env を生成（まだ無ければ）
+docker compose exec -T app bash -lc "\
+  if [ -f /var/www/html/src/.env.example ] && [ ! -f /var/www/html/src/.env ]; then
+    echo '→ .env.example → src/.env を生成'
+    cp /var/www/html/src/.env.example /var/www/html/src/.env
+  fi
+"
 
-log_info "modules/laravel/configure.sh：src/.env の DB_DATABASE を更新しました！"
+# DB_DATABASE を sed で書き換え
+docker compose exec -T app bash -lc "\
+  sed -i '' 's/^DB_DATABASE=.*/DB_DATABASE=${PROJECT_NAME}/' /var/www/html/src/.env
+"
+
+log_info "modules/laravel/configure.sh：コンテナ内で src/.env の調整完了"
