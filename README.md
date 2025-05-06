@@ -77,8 +77,47 @@
 
 <details>
 <summary>不要なファイルかどうか確認する方法</summary>
-【テンプレートとコピー先の差分を取る】
 
+## １. 参照検索：スクリプト内で使われているか調べる
+grep -R "<対象>" -n modules/       # モジュール
+
+grep -R "<対象>" -n functions/     # 汎用関数
+
+grep -R "<対象>" -n .              # 全体
+
+
+## ２. テンプレート＆コピー元との差分確認
+diff -r "templates/<テンプレート相対パス>/" "<コピー先ディレクトリ>/"
+
+
+## ３. Git 履歴調査：いつ追加されたかを確認
+git log --pretty=oneline -- "<対象>"
+
+
+## ４. 一時リネームして実行フローをテスト
+mv "<対象>" "{対象}_bak"
+
+bin/devsetup.sh init   # または関連サブコマンドを一巡
+### → エラーなしなら safe to delete
+
+## ５. .env／docker-compose テンプレート差分確認
+diff "templates/<envテンプレート>" ".env"
+
+diff "templates/<composeテンプレート>" "docker-compose.yml.template"
+
+diff "templates/<composeテンプレート>" "docker-compose.yml"
+
+## ６. テストカバレッジ（PHP＋PHPUnit の例）
+### coverage レポート生成
+./vendor/bin/phpunit --coverage-html coverage/
+### coverage/html/index.html をブラウザで確認
+
+
+## ７. 一時退避＆モニタリング：問題なければ本削除
+mkdir -p backup_unused
+
+mv "<対象>" backup_unused/
+### 数日運用して異常なければ永久削除
 </details>
 
 <details>
