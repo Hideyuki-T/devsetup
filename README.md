@@ -1,3 +1,19 @@
+# 名称：devsetup
+
+## 概要
+- **本ツール** は、Docker ベースの開発環境初期設定を自動化するための CLI ツールです。
+- 対話形式のシェルスクリプトにより、初期設定作業の煩雑さや、複数の Docker コンテナ間で発生するポート競合・構成衝突の問題を解消し、すぐに開発に着手できる環境を提供します。
+
+```
+以下の四項目の自動構築ができます。
+ [1] docker(PHP + nginx + MySQL)
+ [2] docker(PHP + nginx + MySQL) + Laravel
+ [3] docker(PHP + nginx + MySQL) + Laravel + Breeze
+ [4] docker(PHP + nginx + MySQL) + Laravel + Breeze + OAuth
+```
+<details>
+<summary>各モジュール説明</summary>
+
 <table>
 <tr>
 <th>モジュール</th><th>"menu"</th><th>"laravel"</th><th>"docker"</th><th>"breeze"</th><th>"oauth"</th>
@@ -36,43 +52,6 @@
 </tr>
 </table>
 
-<details>
-<summary>各modulesスクリプトの処理概要一覧</summary>
-<table>
-<tr>
-<th>ファイル名</th><th>処理の要約</th>
-</tr>
-<tr>
-<th>modules/menu/init.sh</th><th>プロジェクト名を取得し、構成（docker/laravel/breeze/oauth）を選択・有効化</th>
-</tr>
-<tr>
-<th>modules/docker/init.sh</th><th>docker/ディレクトリにテンプレートファイルをコピー</th>
-</tr>
-<tr>
-<th>modules/docker/configure.sh</th><th>ポート番号を聞いて .env と docker-compose.yml を生成</th>
-</tr>
-<tr>
-<th>modules/docker/execute.sh</th><th>Docker コンテナをリセット＆再起動</th>
-</tr>
-<tr>
-<th>modules/laravel/init.sh</th><th>Laravel を Docker コンテナ内に create-project でインストール</th>
-</tr>
-<tr>
-<th>modules/laravel/configure.sh</th><th>Laravel 側 .env は docker側で管理するのでスキップ（何もしない）</th>
-</tr>
-<tr>
-<th>modules/laravel/execute.sh</th><th>artisan key:generate と migrate:fresh --seed を実行</th>
-</tr>
-<tr>
-<th>modules/breeze/execute.sh</th><th>Breeze の導入、npm ビルド、マイグレーションを一括実行</th>
-</tr>
-<tr>
-<th>modules/oauth/configure.sh</th><th>OAuth（Google）の設定ファイル・ルート・コントローラなどを一括生成</th>
-</tr>
-<tr>
-<th>modules/oauth/execute.sh</th><th>Socialite のインストール、appコンテナの再起動、キャッシュクリア実施</th>
-</tr>
-</table>
 </details>
 
 <details>
@@ -150,11 +129,6 @@ mv "<対象>" backup_unused/
   本番環境においてはこのまま実行すると、既存のデータがすべて破棄される恐れが。。。実運用時には、`php artisan migrate --force` を用いて、必要なスキーマ変更のみを適用するように。
 
 
-# devsetup
-
-## 概要
-- **devsetup** は、Docker ベースの開発環境初期設定を自動化するための CLI ツール。  
-- 対話形式のシェルスクリプトにより、初期設定作業の煩雑さや、複数の Docker コンテナ間で発生するポート競合・構成衝突の問題を解消し、すぐに開発に着手できる環境を提供するもの。
 
 ## 課題と背景
 - **現状の課題:**  
@@ -208,22 +182,13 @@ mv "<対象>" backup_unused/
 ├── config
 │   ├── default.conf
 │   └── user.conf
-├── docker
-│   ├── nginx
-│   │   └── default.conf
-│   └── php
-│       └── Dockerfile
 ├── docker-compose.yml
-├── docker-compose.yml.template
 ├── framework
 │   ├── core.sh
 │   ├── loader.sh
 │   └── logger.sh
 ├── functions
-│   ├── compose_generator.sh
-│   ├── env_generator.sh
-│   ├── logger.sh
-│   └── port_checker.sh
+│   └── env_generator.sh
 ├── Makefile
 ├── modules
 │   ├── breeze
@@ -250,10 +215,6 @@ mv "<対象>" backup_unused/
 │       ├── execute.sh
 │       └── init.sh
 ├── README.md
-├── scripts
-│   ├── build_base.sh
-│   ├── build_breeze.sh
-│   └── build_laravel.sh
 └── templates
     └── php-nginx-mysql
         ├── docker
@@ -262,56 +223,6 @@ mv "<対象>" backup_unused/
         │   └── php
         │       └── Dockerfile
         └── docker-compose.yml.template
-```
-
-## ∞フレームワーク適用後のディレクトリ構成案（改訂版）
-```
-devsetup/
-├── bin/
-│   └── devsetup.sh                     # フレームワークを起動するエントリポイント
-│
-├── config/
-│   ├── default.conf                    # モジュールのデフォルト有効設定
-│   └── user.conf                       # ユーザー設定（対話式で上書き可能）
-│
-├── framework/
-│   ├── core.sh                         # run_phase等のライフサイクル制御
-│   ├── loader.sh                       # モジュール検出 & 設定読み込み
-│   └── logger.sh                       # 色付きログ出力＋タイムスタンプ
-│
-├── modules/
-│   ├── menu/
-│   │   └── init.sh                     # 最初に表示されるメニュー（既存のままでOK）
-│   │
-│   ├── docker/
-│   │   ├── init.sh                     # テンプレートコピーなど初期化処理
-│   │   ├── configure.sh                # ポート・DB等の設定
-│   │   └── execute.sh                  # docker-compose 実行
-│   │
-│   ├── laravel/
-│   │   ├── init.sh                     # Laravel 新規プロジェクト作成
-│   │   ├── configure.sh                # .env 設定など
-│   │   └── execute.sh                  # migrate などの実行
-│   │
-│   ├── breeze/
-│   │   ├── init.sh                     # Breeze インストール
-│   │   └── execute.sh                  # npm install 等
-│   │
-│   └── cleanup/
-│       └── execute.sh                  # 一時ファイル削除・サマリー出力
-│
-├── templates/
-│   └── php-nginx-mysql/
-│       ├── docker/
-│       │   ├── nginx/
-│       │   │   └── default.conf        # nginx 設定テンプレート
-│       │   └── php/
-│       │       └── Dockerfile          # PHP Dockerfile
-│       └── docker-compose.yml.template # Docker Compose テンプレート
-│
-├── README.md                           # 説明ファイル（そのままでOK）
-└── .gitignore                          # 設定除外リスト（任意）
-
 ```
 
 
