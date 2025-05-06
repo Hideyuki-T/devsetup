@@ -27,13 +27,15 @@ export ENABLED_MODULES
 # INIT フェーズ実行
 run_phase init
 
-# メニューで立てられた ENABLED[...] を反映して、モジュールリストを再構築
-# 実行順序を Laravel → Docker → Breeze → OAuth に設定
-INIT_MODULES=()
-for mod in "${ENABLED_MODULES[@]}"; do
-  [[ "$mod" != "menu" ]] && INIT_MODULES+=("$mod")
-done
-
+ # メニューで立てられた ENABLED[...] を優先順位順に並べ替え
+ # 実行順序を Docker → Laravel → Breeze → OAuth に固定
+ INIT_MODULES=()
+ declare -a priority_order=(docker laravel breeze oauth)
+ for name in "${priority_order[@]}"; do
+   if [[ " ${ENABLED_MODULES[*]} " == *" ${name} "* ]]; then
+     INIT_MODULES+=("$name")
+   fi
+ done
 
 # 各モジュールのフルライフサイクル実行
  log_info "=== MODULE フルライフサイクル実行 開始 ==="

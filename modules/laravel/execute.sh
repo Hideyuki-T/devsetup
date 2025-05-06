@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # modules/laravel/execute.sh：Laravel 実行フェーズ
 
 log_info "modules/laravel/execute.sh：Artisan 処理の前に DB の準備を待機中…"

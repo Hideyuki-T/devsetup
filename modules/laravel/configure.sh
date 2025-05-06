@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # modules/laravel/configure.sh：ホスト側の .env を src/ で調整
 
 log_info "modules/laravel/configure.sh：.env を調整中…"
