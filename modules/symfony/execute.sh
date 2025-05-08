@@ -22,7 +22,7 @@ log_info "modules/symfony/execute.sh：コンテナが起動しました"
 
   # ---------------------------------------------
   # 2) フルスタック版をいつでも切り替え可能に：
-  #    ウェブアプリ向け全機能を一括取得したい場合は、以下を有効化
+  #    ウェブアプリ向け全機能を一括取得したい場合は、以下を有効化)
   # docker compose exec app \
   #   composer create-project symfony/webapp-pack symfony --no-interaction
 
