@@ -4,6 +4,7 @@ set -euo pipefail
 
 log_info "modules/symfony/execute.sh：Symfony プロジェクトを生成中…"
 
+# 1) Docker コンテナ群を起動
 log_info "modules/symfony/execute.sh：Docker コンテナを起動中…"
 (
   cd "${PROJECT_DIR}"
@@ -11,22 +12,35 @@ log_info "modules/symfony/execute.sh：Docker コンテナを起動中…"
 )
 log_info "modules/symfony/execute.sh：コンテナが起動しました"
 
+# 2) プロファイルに応じて Symfony を app 配下にインストール
+log_info "modules/symfony/execute.sh：Symfony を app 配下へインストール中…"
 (
   cd "${PROJECT_DIR}"
-
-  # ---------------------------------------------
-  # 1) 最小構成スケルトン（symfony/skeleton）をインストール
-  #    軽量API or マイクロサービス向け
-  docker compose exec app \
-    composer create-project symfony/skeleton symfony "7.2.*" --no-interaction
-
-  # ---------------------------------------------
-  # 2) フルスタック版をいつでも切り替え可能に：
-  #    ウェブアプリ向け全機能を一括取得したい場合は、以下を有効化)
-  # docker compose exec app \
-  #   composer create-project symfony/webapp-pack symfony --no-interaction
-
+  if [ "${SYMFONY_PROFILE}" = "skeleton" ]; then
+    log_info "modules/symfony/execute.sh：最小構成スケルトン（symfony/skeleton）をインストールします…"
+    docker compose run --rm --no-deps -w /var/www/html app \
+      composer create-project symfony/skeleton app "${SYMFONY_VERSION}" --no-interaction
+  else
+    log_info "modules/symfony/execute.sh：フルスタック（symfony/webapp-pack）をインストールします…"
+    docker compose run --rm --no-deps -w /var/www/html app \
+      composer create-project symfony/webapp-pack app --no-interaction
+  fi
 )
-
 log_info "modules/symfony/execute.sh：依存パッケージをインストールしました"
-log_info "modules/symfony/execute.sh：ブラウザで http://localhost:${WEB_PORT}/symfony/public/ にアクセス可能です"
+
+# 3) 公開ルートをシンボリックリンクで app/public へ
+rm -rf "${PROJECT_DIR}/public"
+ln -s app/public "${PROJECT_DIR}/public"
+log_info "modules/symfony/execute.sh：public → app/public へのシンボリックリンクを作成しました"
+
+# 4) ブラウザアクセス先を表示
+log_info "modules/symfony/execute.sh：ブラウザで http://localhost:${WEB_PORT} にアクセス可能です"
+
+# 5) PHP ビルトインサーバーを起動（任意）
+log_info "modules/symfony/execute.sh：PHP ビルトインサーバーを起動中…"
+(
+  # コンテナ内の /var/www/html を作業ディレクトリに設定
+  docker compose exec -d -w /var/www/html app \
+    sh -c "php -S 0.0.0.0:${WEB_PORT} -t app/public"
+)
+log_info "modules/symfony/execute.sh：ビルトインサーバーが稼働中 → http://localhost:${WEB_PORT}"

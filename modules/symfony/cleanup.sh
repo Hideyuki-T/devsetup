@@ -4,15 +4,15 @@ set -euo pipefail
 
 log_info "modules/symfony/cleanup.sh：不要ファイルの整理を行います…"
 
-# 空の README を作成しておく
-touch "${SYMFONY_DIR}/README.md"
+# README を app 配下に配置
+touch "${PROJECT_DIR}/app/README.md"
 
-# パーミッション調整：public ディレクトリが存在する場合のみ
-if [ -d "${SYMFONY_DIR}/public" ]; then
-  chmod -R 755 "${SYMFONY_DIR}/public"
-  log_info "modules/symfony/cleanup.sh：public ディレクトリのパーミッションを調整しました"
+# 権限調整：app/public が存在する場合のみ
+if [ -d "${PROJECT_DIR}/app/public" ]; then
+  chmod -R 755 "${PROJECT_DIR}/app/public"
+  log_info "modules/symfony/cleanup.sh：app/public のパーミッションを調整しました"
 else
-  log_info "modules/symfony/cleanup.sh：public ディレクトリが存在しないため、スキップします"
+  log_info "modules/symfony/cleanup.sh：app/public が存在しないため、スキップします"
 fi
 
 log_info "modules/symfony/cleanup.sh：整理完了"
