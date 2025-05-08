@@ -45,13 +45,13 @@ case "${SELECTED}" in
 esac
 
 # 6) 配列に追加
-for mod in docker laravel breeze oauth; do
+for mod in docker laravel symfony breeze oauth; do
   [[ "${ENABLED[$mod]:-false}" == true ]] && ENABLED_MODULES+=("$mod")
 done
 
 
 # 7) 優先順位に基づく並び替え
-declare -a priority_order=(docker laravel breeze oauth)
+declare -a priority_order=(docker laravel symfony breeze oauth)
 mapfile -t ENABLED_MODULES < <(
   for name in "${priority_order[@]}"; do
     [[ " ${ENABLED_MODULES[*]} " == *" ${name} "* ]] && printf "%s\n" "$name"
