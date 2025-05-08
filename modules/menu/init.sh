@@ -26,11 +26,11 @@ log_info "modules/menu/init.sh：プロジェクトディレクトリを作成�
 # 4) 構成メニュー表示
 cat << 'EOF'
 メニュー：
- [1] docker(PHP + nginx + MySQL) : 8081
- [2] docker(PHP + nginx + MySQL) + Laravel : 8082
- [3] docker(PHP + nginx + MySQL) + Laravel + Breeze : 8083
- [4] docker(PHP + nginx + MySQL) + Laravel + Breeze + OAuth :8080
- [5] docker(PHP + nginx + MySQL) + Symfony : 8085
+ [1] 8081 : docker(PHP + nginx + MySQL)
+ [2] 8082 : docker(PHP + nginx + MySQL) + Laravel
+ [3] 8083 : docker(PHP + nginx + MySQL) + Laravel + Breeze
+ [4] 8080 : docker(PHP + nginx + MySQL) + Laravel + Breeze + OAuth
+ [5] 8085 : docker(PHP + nginx + MySQL) + Symfony
 EOF
 read -rp "番号を選択してね。: " SELECTED
 
