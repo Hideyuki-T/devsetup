@@ -10,18 +10,20 @@
  [2] docker(PHP + nginx + MySQL) + Laravel
  [3] docker(PHP + nginx + MySQL) + Laravel + Breeze
  [4] docker(PHP + nginx + MySQL) + Laravel + Breeze + OAuth
+ [5] docker(PHP + nginx + MySQL) + Symfony
 ```
 <details>
 <summary>各モジュール説明</summary>
 
 <table>
 <tr>
-<th>モジュール</th><th>"menu"</th><th>"laravel"</th><th>"docker"</th><th>"breeze"</th><th>"oauth"</th>
+<th>モジュール</th><th>"menu"</th><th>"laravel"</th><th>"Symfony"</th><th>"docker"</th><th>"breeze"</th><th>"oauth"</th>
 </tr>
 <tr>
 <th>【init.sh】</th>
 <th>ディレクトリ作成・モジュールを有効化＆並び替え・有効構成をログ出力</th>
 <th>Laravel を Docker コンテナ内にインストールする</th>
+<th>コンテナ内に Symfony プロジェクト骨格を作成</th>
 <th>Docker の設定ファイルをプロジェクトにコピーする</th>
 <th>特に処理なし</th>
 <th>特に処理なし</th>
@@ -30,6 +32,7 @@
 <th>【configure.sh】</th>
 <th>ファイルなし</th>
 <th>特に処理なし</th>
+<th>.env にデータベース接続やアプリ固有のシークレットを設定</th>
 <th>ポート番号を聞いて .env と docker-compose.yml を生成</th>
 <th>特に処理なし</th>
 <th>Laravel に Google OAuth 認証をフル自動で設定</th>
@@ -38,12 +41,14 @@
 <th>【execute.sh】</th>
 <th>ファイルなし</th>
 <th>Laravel の初期化を Docker コンテナ内で実行する</th>
+<th>Doctrine のマイグレーション実行と開発サーバ起動</th>
 <th>Docker コンテナを一度止めてから、改めてビルドして起動</th>
 <th>Laravel Breeze をコンテナ内でインストール＆ビルドし、ログインUIを使える状態にまで一括セットアップ</th>
 <th>OAuth（Googleログイン）を使うために、Socialite をインストールし、Laravel を再起動＆キャッシュクリア</th>
 </tr>
 <tr>
 <th>【cleanup.sh】</th>
+<th>特に処理なし</th>
 <th>特に処理なし</th>
 <th>特に処理なし</th>
 <th>特に処理なし</th>
