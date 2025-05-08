@@ -1,19 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source "${DEVSETUP_ROOT}/framework/logger.sh"
+# modules/symfony/init.sh：Symfony プロジェクト準備フェーズ
 
-log_info "modules/symfony/init.sh：ホスト上の symfony ディレクトリをリセット"
-rm -rf "${PROJECT_DIR}/symfony"
+log_info "modules/symfony/init.sh：Symfony プロジェクトの雛形を準備します…"
 
-log_info "modules/symfony/init.sh：コンテナ内の symfony ディレクトリもリセット"
-docker compose exec -T app bash -lc 'rm -rf /var/www/html/symfony'
+# プロジェクトディレクトリ直下に Symfony 用ディレクトリを作成（任意、空ディレクトリでも可）
+mkdir -p "${PROJECT_DIR}/symfony"
+export SYMFONY_DIR="${PROJECT_DIR}/symfony"
 
-log_info "modules/symfony/init.sh：コンテナ内で Symfony プロジェクトを作成します"
-(
-  cd "${PROJECT_DIR}"
-  docker compose exec -T app bash -lc "\
-    composer create-project symfony/website-skeleton symfony \
-      --no-interaction --quiet --no-scripts \
-  "
-)
-log_info "modules/symfony/init.sh：Symfony プロジェクト作成完了"
+log_info "modules/symfony/init.sh：雛形ディレクトリを作成しました：${SYMFONY_DIR}"
