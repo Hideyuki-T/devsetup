@@ -30,6 +30,7 @@ cat << 'EOF'
  [2] docker(PHP + nginx + MySQL) + Laravel
  [3] docker(PHP + nginx + MySQL) + Laravel + Breeze
  [4] docker(PHP + nginx + MySQL) + Laravel + Breeze + OAuth
+ [5] docker(PHP + nginx + MySQL) + Symfony
 EOF
 read -rp "番号を選択してね。: " SELECTED
 
@@ -39,6 +40,7 @@ case "${SELECTED}" in
   2) ENABLED[docker]=true; ENABLED[laravel]=true ;;
   3) ENABLED[docker]=true; ENABLED[laravel]=true; ENABLED[breeze]=true ;;
   4) ENABLED[docker]=true; ENABLED[laravel]=true; ENABLED[breeze]=true; ENABLED[oauth]=true ;;
+  5) ENABLED[docker]=true; ENABLED[symfony]=true ;;
   *) log_error "無効な選択です"; exit 1 ;;
 esac
 

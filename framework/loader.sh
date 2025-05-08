@@ -28,9 +28,8 @@ export ENABLED_MODULES
 run_phase init
 
  # メニューで立てられた ENABLED[...] を優先順位順に並べ替え
- # 実行順序を Docker → Laravel → Breeze → OAuth に固定
  INIT_MODULES=()
- declare -a priority_order=(docker laravel breeze oauth)
+ declare -a priority_order=(docker laravel breeze oauth symfony)
  for name in "${priority_order[@]}"; do
    if [[ " ${ENABLED_MODULES[*]} " == *" ${name} "* ]]; then
      INIT_MODULES+=("$name")

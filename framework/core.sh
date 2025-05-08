@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
-
 source "$(dirname "${BASH_SOURCE[0]}")/logger.sh"
 
 function run_phase() {
@@ -11,10 +9,10 @@ function run_phase() {
   # フェーズごとのモジュール順序を決める
   local mods=()
   if [[ "$phase" == "execute" ]]; then
-    # Docker を先頭、残り順は menu/init.sh で整列済みのまま
+    # Docker を先頭に固定
     mods=( docker "${ENABLED_MODULES[@]/docker}" )
   else
-    # init／configure／cleanup はそのまま
+    # init/configure/cleanup はメニュー選択のまま
     mods=( "${ENABLED_MODULES[@]}" )
   fi
 
@@ -31,4 +29,3 @@ function run_phase() {
 
   log_info "=== ${phase^^} フェーズ終了 ==="
 }
-
