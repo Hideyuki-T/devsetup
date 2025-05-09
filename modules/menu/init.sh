@@ -11,7 +11,7 @@ ENABLED_MODULES=()
 declare -A ENABLED
 export ENABLED_MODULES
 
-# 1) 対話式でプロジェクト名を取得（既存との競合チェックを含む）
+# 1) 対話式でプロジェクト名を取得（既存との競合チェックも）
 while true; do
   read -rp "プロジェクト名はどうしますか？: " PROJECT_NAME
 
@@ -27,7 +27,6 @@ while true; do
     log_error "『${PROJECT_NAME}』というプロジェクトは既に存在しています。別名を使用してください。"
     continue
   fi
-
   break
 done
 
