@@ -3,11 +3,22 @@ set -euo pipefail
 # modules/docker/configure.sh：Docker 設定フェーズ
 
 log_info "modules/docker/configure.sh：使用したいポート番号を選択してください。"
-read -rp "使用したいポート番号を入力してね。： " port
-if ! [[ "$port" =~ ^[0-9]+$ ]]; then
-  log_error "ポート番号は数字で入力してください。。。"
-  exit 1
-fi
+
+while true; do
+  read -rp "使用したいポート番号を入力してね。： " port
+
+  if ! [[ "$port" =~ ^[0-9]+$ ]]; then
+    log_error "ポート番号は数字で入力してください。。。"
+    continue
+  fi
+
+  # Dockerが使用しているポートを確認
+  if docker ps --format '{{.Ports}}' | grep -q "${port}->"; then
+    log_error "ポート番号 ${port} は既に Docker コンテナで使用中です。別のポートを選んでください。"
+    continue
+  fi
+  break
+done
 log_info "modules/docker/configure.sh：ポート番号確認 -> ${port}"
 
 # PROJECT_DIR へ移動
