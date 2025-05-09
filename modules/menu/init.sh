@@ -26,10 +26,11 @@ log_info "modules/menu/init.sh：プロジェクトディレクトリを作成�
 # 4) 構成メニュー表示
 cat << 'EOF'
 メニュー：
- [1] docker(PHP + nginx + MySQL)
- [2] docker(PHP + nginx + MySQL) + Laravel
- [3] docker(PHP + nginx + MySQL) + Laravel + Breeze
- [4] docker(PHP + nginx + MySQL) + Laravel + Breeze + OAuth
+ [1] 8081 : docker(PHP + nginx + MySQL)
+ [2] 8082 : docker(PHP + nginx + MySQL) + Laravel
+ [3] 8083 : docker(PHP + nginx + MySQL) + Laravel + Breeze
+ [4] 8080 : docker(PHP + nginx + MySQL) + Laravel + Breeze + OAuth
+ [5] 8085 : docker(PHP + nginx + MySQL) + Symfony
 EOF
 read -rp "番号を選択してね。: " SELECTED
 
@@ -39,17 +40,18 @@ case "${SELECTED}" in
   2) ENABLED[docker]=true; ENABLED[laravel]=true ;;
   3) ENABLED[docker]=true; ENABLED[laravel]=true; ENABLED[breeze]=true ;;
   4) ENABLED[docker]=true; ENABLED[laravel]=true; ENABLED[breeze]=true; ENABLED[oauth]=true ;;
+  5) ENABLED[docker]=true; ENABLED[symfony]=true ;;
   *) log_error "無効な選択です"; exit 1 ;;
 esac
 
 # 6) 配列に追加
-for mod in docker laravel breeze oauth; do
+for mod in docker laravel symfony breeze oauth; do
   [[ "${ENABLED[$mod]:-false}" == true ]] && ENABLED_MODULES+=("$mod")
 done
 
 
 # 7) 優先順位に基づく並び替え
-declare -a priority_order=(docker laravel breeze oauth)
+declare -a priority_order=(docker laravel symfony breeze oauth)
 mapfile -t ENABLED_MODULES < <(
   for name in "${priority_order[@]}"; do
     [[ " ${ENABLED_MODULES[*]} " == *" ${name} "* ]] && printf "%s\n" "$name"
