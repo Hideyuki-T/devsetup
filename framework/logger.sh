@@ -22,6 +22,10 @@ function log_debug() {
   echo -e "\e[90m[$(_timestamp)] [DEBUG] [$(_log_context)] $1\e[0m"
 }
 
+function log_warn() {
+  echo -e "\e[33m[$(_timestamp)] [WARN] [$(_log_context)] $1\e[0m"
+}
+
 function log_error() {
   echo \e "\e[31m[$(_timestamp)] [ERROR] [$(_log_context)] $1\e[0m" >&2
 }
