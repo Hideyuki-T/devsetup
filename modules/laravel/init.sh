@@ -12,3 +12,4 @@ docker compose exec -T app bash -lc "\
 "
 
 log_info "modules/laravel/init.sh：Laravel インストール完了"
+
