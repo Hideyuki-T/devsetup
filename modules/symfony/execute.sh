@@ -1,46 +1,46 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# modules/symfony/execute.sh：Symfony インストール＆初期化フェーズ
+source "${DEVSETUP_ROOT}/framework/logger.sh"
 
-log_info "modules/symfony/execute.sh：Symfony プロジェクトを生成中…"
+log_info "必要な composer パッケージを確認中…"
 
-# 1) Docker コンテナ群を起動
-log_info "modules/symfony/execute.sh：Docker コンテナを起動中…"
-(
-  cd "${PROJECT_DIR}"
-  docker compose up -d
-)
-log_info "modules/symfony/execute.sh：コンテナが起動しました"
+# MakerBundle（コード生成支援）
+if ! grep -q '"symfony/maker-bundle"' composer.json; then
+  log_info "symfony/maker-bundle を導入します"
+  docker compose exec -T app bash -lc "cd /var/www/html && composer require symfony/maker-bundle --dev"
+fi
 
-# 2) プロファイルに応じて Symfony を app 配下にインストール
-log_info "modules/symfony/execute.sh：Symfony を app 配下へインストール中…"
-(
-  cd "${PROJECT_DIR}"
-  if [ "${SYMFONY_PROFILE}" = "skeleton" ]; then
-    log_info "modules/symfony/execute.sh：最小構成スケルトン（symfony/skeleton）をインストールします…"
-    docker compose run --rm --no-deps -w /var/www/html app \
-      composer create-project symfony/skeleton app "${SYMFONY_VERSION}" --no-interaction
-  else
-    log_info "modules/symfony/execute.sh：フルスタック（symfony/webapp-pack）をインストールします…"
-    docker compose run --rm --no-deps -w /var/www/html app \
-      composer create-project symfony/webapp-pack app --no-interaction
+# Fixtures（Seeder相当）
+if ! grep -q '"doctrine/doctrine-fixtures-bundle"' composer.json; then
+  log_info "doctrine-fixtures-bundle を導入します"
+  docker compose exec -T app bash -lc "cd /var/www/html && composer require doctrine/doctrine-fixtures-bundle --dev"
+fi
+
+log_info "modules/symfony/execute.sh：bin/console コマンドをコンテナ内で実行します"
+
+cd "${PROJECT_DIR}"
+
+# MySQL 起動待ち
+for i in {1..15}; do
+  if docker compose exec -T db mysqladmin ping -h db --silent; then
+    log_info "MySQL が応答しました（${i}秒）"
+    break
   fi
-)
-log_info "modules/symfony/execute.sh：依存パッケージをインストールしました"
+  sleep 1
+done
 
-# 3) 公開ルートをシンボリックリンクで app/public へ
-rm -rf "${PROJECT_DIR}/public"
-ln -s app/public "${PROJECT_DIR}/public"
-log_info "modules/symfony/execute.sh：public → app/public へのシンボリックリンクを作成しました"
+# DB削除 → 作成
+docker compose exec -T app bash -lc "cd /var/www/html && php bin/console doctrine:database:drop --force"
+log_info "DB削除 完了"
 
-# 4) ブラウザアクセス先を表示
-log_info "modules/symfony/execute.sh：ブラウザで http://localhost:${WEB_PORT} にアクセス可能です"
+docker compose exec -T db bash -lc "cd /var/www/html && php bin/console doctrine:database:create"
+log_info "DB作成 完了"
 
-# 5) PHP ビルトインサーバーを起動（任意）
-log_info "modules/symfony/execute.sh：PHP ビルトインサーバーを起動中…"
-(
-  # コンテナ内の /var/www/html を作業ディレクトリに設定
-  docker compose exec -d -w /var/www/html app \
-    sh -c "php -S 0.0.0.0:${WEB_PORT} -t app/public"
-)
-log_info "modules/symfony/execute.sh：ビルトインサーバーが稼働中 → http://localhost:${WEB_PORT}"
+# マイグレーション実行
+docker compose exec -T app bash -lc "cd /var/www/html && php bin/console doctrine:migrations:migrate --no-interaction"
+log_info "マイグレーション 完了"
+
+# フィクスチャ投入（Seeder相当）
+docker compose exec -T app bash -lc "cd /var/www/html && php bin/console doctrine:fixtures:load --no-interaction"
+log_info "Fixtures投入 完了"
+

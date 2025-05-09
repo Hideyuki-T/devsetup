@@ -214,7 +214,12 @@ mv "<対象>" backup_unused/
 │   ├── menu
 │   │   ├── cleanup.sh
 │   │   └── init.sh
-│   └── oauth
+│   ├── oauth
+│   │   ├── cleanup.sh
+│   │   ├── configure.sh
+│   │   ├── execute.sh
+│   │   └── init.sh
+│   └── symfony
 │       ├── cleanup.sh
 │       ├── configure.sh
 │       ├── execute.sh

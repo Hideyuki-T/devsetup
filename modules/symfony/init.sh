@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# modules/symfony/init.sh：Symfony プロジェクト準備フェーズ
 
-log_info "modules/symfony/init.sh：Symfony プロジェクトの雛形を準備します…"
+source "${DEVSETUP_ROOT}/framework/logger.sh"
 
-# 既存の公開用ディレクトリを削除し、新規 public を確保
-rm -rf "${PROJECT_DIR}/public"
-mkdir -p "${PROJECT_DIR}/public"
+log_info "modules/laravel/init.sh：コンテナ内で symfony をインストールします。"
 
-rm -rf "${PROJECT_DIR}/src"
+cd "${PROJECT_DIR}"
 
-# Symfony 用に app を生成
-mkdir -p "${PROJECT_DIR}/app"
-export SYMFONY_DIR="${PROJECT_DIR}/app"
+# composer create-project を --force オプションで上書
+docker compose exec -T app bash -lc "\
+  composer create-project symfony/skeleton /var/www/html --quiet --remove-vcs --ansi \
+"
 
-log_info "modules/symfony/init.sh：雛形ディレクトリを作成しました：${SYMFONY_DIR}"
+log_info "modules/laravel/init.sh：symfony インストール完了"
