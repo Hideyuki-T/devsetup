@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 
 # modules/menu/init.sh：プロジェクト作成フェーズ
+
 source "$(dirname "${BASH_SOURCE[0]}")/../../framework/logger.sh"
 
 # 有効化フラグおよび順序付きモジュール配列
@@ -9,25 +11,25 @@ ENABLED_MODULES=()
 declare -A ENABLED
 export ENABLED_MODULES
 
-# 1) 対話式でプロジェクト名を取得（ループで安全確認）
+# 1) 対話式でプロジェクト名を取得（既存との競合チェックを含む）
 while true; do
   read -rp "プロジェクト名はどうしますか？: " PROJECT_NAME
 
   if [[ -z "$PROJECT_NAME" ]]; then
-    echo "プロジェクト名が空です。もう一度入力してください。"
+    log_warn "プロジェクト名が空です。もう一度入力してください。"
     continue
   fi
 
-  if [[ -d "$PROJECT_NAME" ]]; then
-    echo "『${PROJECT_NAME}』という名のフォルダは既にあります。別の名前を使用してください。"
+  BASE_DIR="${DEVSETUP_ROOT}/.."
+  PROJECT_DIR="${BASE_DIR}/${PROJECT_NAME}"
+
+  if [[ -d "$PROJECT_DIR" ]]; then
+    log_error "『${PROJECT_NAME}』というプロジェクトは既に存在しています。別名を使用してください。"
     continue
-  else
-    echo "『${PROJECT_NAME}』は使用可能です。このまま処理を続行します。"
-    break
   fi
+
+  break
 done
-
-log_info "『${PROJECT_NAME}』は使用可能です。このまま処理を続行します。"
 
 # 2) Projects ディレクトリ直下に一度だけ作成
 BASE_DIR="${DEVSETUP_ROOT}/.."
