@@ -9,9 +9,6 @@ docker compose down --volumes --remove-orphans
 docker compose build --no-cache app
 docker compose up -d
 
-# - Symfonyプロジェクトのインストール
-# - PHP拡張の確認
-
 log_info "init.sh：PHP拡張のロード状態を確認します"
 
 PDO_EXTENSIONS=$(docker compose exec -T app php -m | grep -i pdo || true)
@@ -28,8 +25,18 @@ fi
 
 log_info "init.sh：PHP拡張確認済み（PDO + pdo_mysql）"
 
+# Symfonyバージョンの選択
+echo "使用する Symfony のバージョンを入力してね（例: 7.2.*、最新を使う場合は空欄のまま Enter!!）："
+read -rp "Symfonyバージョン: " SYMFONY_VERSION
+
+if [[ -z "$SYMFONY_VERSION" ]]; then
+  CREATE_PROJECT_CMD="composer create-project symfony/skeleton /var/www/html --quiet --remove-vcs --ansi"
+else
+  CREATE_PROJECT_CMD="composer create-project symfony/skeleton:\"$SYMFONY_VERSION\" /var/www/html --quiet --remove-vcs --ansi"
+fi
+
 cd "${PROJECT_DIR}"
 
-log_info "init.sh：Symfony プロジェクトを作成中..."
-docker compose exec -T app bash -lc "composer create-project symfony/skeleton /var/www/html --quiet --remove-vcs --ansi"
+log_info "init.sh：Symfony プロジェクトを作成中だよ！！ちょっと待ってね。。。（バージョン: ${SYMFONY_VERSION:-latest})..."
+docker compose exec -T app bash -lc "$CREATE_PROJECT_CMD"
 log_info "init.sh：Symfony インストール完了"
