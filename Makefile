@@ -3,7 +3,7 @@
 # 開発用＋Homebrew配布用 統合構成（開発後に開発用は削除）
 # --------------------------------------
 
-.PHONY: devsetup
+.PHONY: devsetup run
 
 # メインエントリ：開発中は devsetup.sh、Homebrew用には devsetup を使用します
 devsetup:
@@ -15,8 +15,5 @@ else
 	@./bin/devsetup
 endif
 
-
-# ================
-# 【メモ】
-# ifeq : Makefile の条件分岐構文(Makeがターゲットや変数を評価するときに使う構文)
-# ================
+# エイリアス的に run でも起動
+run: devsetup
